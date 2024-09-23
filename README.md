@@ -11,6 +11,8 @@ Glintfund is a decentralized crowdfunding platform built on the Tron blockchain.
   - **Education & Tuitions**: Start campaigns for school fees, tuition, or educational supplies.
   - **Scholarships**: Help fund scholarship programs or individual students.
   - **Projects & Innovation**: Raise money for projects ranging from tech startups to creative ventures.
+ 
+- **Multi-Currency Support**: Accept donations in TRX and other Tron-compatible tokens (USDT, JST, WIN, etc.).
   
 - **Lending & Borrowing**: Peer-to-peer lending allows individuals to borrow funds for specific purposes and pay back donors, with smart contracts ensuring trust and transparency.
 
@@ -27,8 +29,6 @@ Glintfund is a decentralized crowdfunding platform built on the Tron blockchain.
 - **Decentralized Fund Management**: Fundraisers and donors benefit from the security of decentralized smart contracts, ensuring that funds are disbursed only when campaign goals or conditions are met.
 
 ## Additional Features:
-- **Multi-Currency Support**: Accept donations in TRX and other Tron-compatible tokens (USDT, JST, WIN, etc.).
-  
 - **Fund Matching Programs**: Introduce corporate or community fund-matching to amplify campaigns.
   
 - **Recurring Donations**: Allow users to set up recurring donations to their favorite causes or campaigns.
