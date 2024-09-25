@@ -13,6 +13,7 @@ import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { useGetAllCampaigns, contractAddress } from "../hooks/index";
 import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
+import { initContract } from "../utils/tronweb";
 
 type bioT = {
   name: string;
@@ -37,6 +38,9 @@ export const AppContext = React.createContext<{
   getAllCampaigns: any;
   getACampaign: any;
   donate: any;
+  //tron
+  walletAddress: any;
+  setWalletAddress: any;
 }>({
   step: 1,
   setStep: undefined,
@@ -55,6 +59,9 @@ export const AppContext = React.createContext<{
   getAllCampaigns: undefined,
   getACampaign: undefined,
   donate: undefined,
+  //tron
+  walletAddress: "",
+  setWalletAddress: undefined,
 });
 
 export const AppProvider = ({ children }: any) => {
@@ -75,6 +82,9 @@ export const AppProvider = ({ children }: any) => {
     description: "",
     donationComplete: false,
   });
+  const [walletAddress, setWalletAddress] = React.useState("");
+  const [contract, setContract] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -83,7 +93,7 @@ export const AppProvider = ({ children }: any) => {
   const recipient = useAppSelector((state) => state.recipient);
 
   const { address } = useAccount();
-  const { data: campaigns, isLoading } = useGetAllCampaigns();
+  const { data: campaigns, isLoading: isLaoding_ } = useGetAllCampaigns();
 
   const getUser = () => {};
 
@@ -131,7 +141,26 @@ export const AppProvider = ({ children }: any) => {
     } else if (userExist.length === 0) {
       navigate("/onboarding");
     }
-  }, [address, isLoading]);
+  }, [address, isLaoding_]);
+
+  React.useEffect(() => {
+    const connectWallet = async () => {
+      const contract = await initContract();
+      setContract(contract);
+      setIsLoading(false);
+    };
+    if (isLoading) {
+      navigate("/loading");
+    } else if (!contract) {
+      navigate("/connect-wallet");
+    } else {
+      //TODO: navigate to onboarding after i fetch the contratc and notice that
+      // this address doesn't exist with any account
+      //navigate to campagin if it does
+      navigate("/onboarding");
+    }
+    connectWallet();
+  }, []);
 
   return (
     <AppContext.Provider
@@ -153,6 +182,8 @@ export const AppProvider = ({ children }: any) => {
         getAllCampaigns,
         getACampaign,
         donate,
+        walletAddress,
+        setWalletAddress,
       }}
     >
       {children}
