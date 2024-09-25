@@ -1,6 +1,6 @@
 {
   "name": "glint-fund",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@babel/preset-env": "^7.25.4",
@@ -44,6 +44,7 @@
     "style-loader": "^4.0.0",
     "svg-loader": "^0.0.2",
     "tailwind-merge": "^2.5.2",
+    "tronweb": "^6.0.0",
     "ts-loader": "^9.5.1",
     "url-loader": "^4.1.1",
     "viem": "^2.14.2",

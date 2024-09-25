@@ -14,7 +14,7 @@ import "@fontsource/montserrat"; // Defaults to weight 400
 import "@fontsource/montserrat/400.css"; // Specify weight
 import "@fontsource/montserrat/400-italic.css"; // Specify weight and style
 import { Toaster } from "react-hot-toast";
-import "./utils/web3modal";
+// import "./utils/web3modal";
 import "./index.css";
 import "@rainbow-me/rainbowkit/styles.css";
 // import "tailwindcss/tailwind.css";
