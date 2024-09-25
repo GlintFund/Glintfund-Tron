@@ -38,31 +38,29 @@ function Onboarding3() {
   const { data: camp } = useGetACampaign(1);
 
   const handleCreateUser = async () => {
-    setLoading(true);
-    try {
-      if (!address) {
-        await connectAsync({
-          chainId: zetachainAthensTestnet.id,
-          connector: injected(),
-        });
-      }
-
-      const data = await writeContractAsync({
-        chainId: zetachainAthensTestnet.id,
-        address: contractAddress, // change to receipient address
-        functionName: "create",
-        abi: contractAbi.abi,
-        args: [bio.name, bio.description, Number(amount), tags],
-      });
-
-      toast("Account Created Successfully");
-      navigate("/profile");
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      toast("Something Went Wrong");
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   if (!address) {
+    //     await connectAsync({
+    //       chainId: zetachainAthensTestnet.id,
+    //       connector: injected(),
+    //     });
+    //   }
+    //   const data = await writeContractAsync({
+    //     chainId: zetachainAthensTestnet.id,
+    //     address: contractAddress, // change to receipient address
+    //     functionName: "create",
+    //     abi: contractAbi.abi,
+    //     args: [bio.name, bio.description, Number(amount), tags],
+    //   });
+    //   toast("Account Created Successfully");
+    //   navigate("/profile");
+    //   setLoading(false);
+    // } catch (err) {
+    //   console.log(err);
+    //   toast("Something Went Wrong");
+    //   setLoading(false);
+    // }
   };
 
   return (

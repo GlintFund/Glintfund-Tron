@@ -69,21 +69,20 @@ function Index() {
   const bounceAnimation = `${bounce} 3s ease-in-out infinite`;
 
   const handleClaim = async () => {
-    try {
-      const hash = await writeContractAsync({
-        abi: contractAbi.abi,
-        address: contractAddress,
-        functionName: "claim",
-        args: [data.id],
-      });
-
-      console.log(hash);
-      toast.success("claim Successful");
-    } catch (err: any) {
-      toast.error(err.message);
-      console.log("[Error message from handleClaim -]", err.message);
-      return;
-    }
+    // try {
+    //   const hash = await writeContractAsync({
+    //     abi: contractAbi.abi,
+    //     address: contractAddress,
+    //     functionName: "claim",
+    //     args: [data.id],
+    //   });
+    //   console.log(hash);
+    //   toast.success("claim Successful");
+    // } catch (err: any) {
+    //   toast.error(err.message);
+    //   console.log("[Error message from handleClaim -]", err.message);
+    //   return;
+    // }
   };
 
   React.useEffect(() => {

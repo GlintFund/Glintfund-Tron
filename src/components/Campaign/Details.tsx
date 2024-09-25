@@ -63,32 +63,31 @@ function Details() {
   }, [contractData]);
 
   const handleDonate = async () => {
-    try {
-      setLoading(true);
-      if (value <= 0) {
-        return toast.error("you can't send below 0 Zeta");
-      } else if (!address) {
-        await connectAsync({
-          chainId: zetachainAthensTestnet.id,
-          connector: injected(),
-        });
-      }
-      const hash = await writeContractAsync({
-        abi: contractAbi.abi,
-        address: contractAddress,
-        functionName: "donate",
-        value: parseEther(`${value}`),
-        args: [id],
-      });
-
-      console.log(hash);
-      setLoading(false);
-      toast.success("Donation Successful");
-    } catch (err: any) {
-      setLoading(false);
-      toast.error(err.message);
-      return;
-    }
+    // try {
+    //   setLoading(true);
+    //   if (value <= 0) {
+    //     return toast.error("you can't send below 0 Zeta");
+    //   } else if (!address) {
+    //     await connectAsync({
+    //       chainId: zetachainAthensTestnet.id,
+    //       connector: injected(),
+    //     });
+    //   }
+    //   const hash = await writeContractAsync({
+    //     abi: contractAbi.abi,
+    //     address: contractAddress,
+    //     functionName: "donate",
+    //     value: parseEther(`${value}`),
+    //     args: [id],
+    //   });
+    //   console.log(hash);
+    //   setLoading(false);
+    //   toast.success("Donation Successful");
+    // } catch (err: any) {
+    //   setLoading(false);
+    //   toast.error(err.message);
+    //   return;
+    // }
   };
 
   const handleSendVal = (valueString: string) => {
