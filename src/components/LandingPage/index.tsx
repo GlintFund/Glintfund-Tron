@@ -43,7 +43,7 @@ const words = [
     className: "text-white sm:text-4xl",
   },
   {
-    text: "ZetaChain.",
+    text: "Tron.",
     className: "text-purple-500 dark:text-purple-500 sm:text-4xl",
   },
 ];

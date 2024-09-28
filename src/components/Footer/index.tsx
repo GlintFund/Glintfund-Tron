@@ -18,9 +18,9 @@ function Footer() {
             href="https://zetachain.com"
             target="_blank"
             rel="Zetachain"
-            className="text-green-800 font-bold z-100000"
+            className="text-red-800 font-bold z-100000"
           >
-            Zetachain
+            Tron
           </a>
         </Text>
       </Flex>
