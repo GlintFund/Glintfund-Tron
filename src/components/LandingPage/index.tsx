@@ -24,6 +24,9 @@ import Lottie from "lottie-react";
 import ICON from "../../animations/GIF/home-icon.json";
 import WaitlistModal from "../Waitlist/WaitlistModal.jsx";
 import supabase from "../../Services/supabase";
+import Why from './Why';
+import Trade from './Trade';
+import Stats from './Stats';
 
 const words = [
   {
@@ -221,6 +224,9 @@ function LandingPage() {
             </Show>
           </Flex>
         </Flex>
+        <Stats />
+    <Why />
+    <Trade />
         <Box h="10vh">
           <Footer />
         </Box>

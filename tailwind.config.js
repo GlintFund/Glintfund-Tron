@@ -7,7 +7,17 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./public/index.html"],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'], // Replace 'Poppins' with your font
+        serif: ['Merriweather', 'serif'],
+        mono: ['Menlo', 'monospace'],
+      },
+      colors: {
+        customPurple: '#341A41', // Add your custom color here
+      },
+    },
   },
   plugins: [addVariablesForColors],
 

@@ -139,28 +139,28 @@ export const AppProvider = ({ children }: any) => {
       console.log(previousPage);
       navigate(previousPage);
     } else if (userExist.length === 0) {
-      navigate("/onboarding");
+      navigate("/");
     }
   }, [address, isLaoding_]);
 
-  React.useEffect(() => {
-    const connectWallet = async () => {
-      const contract = await initContract();
-      setContract(contract);
-      setIsLoading(false);
-    };
-    if (isLoading) {
-      navigate("/loading");
-    } else if (!contract) {
-      navigate("/connect-wallet");
-    } else {
-      //TODO: navigate to onboarding after i fetch the contratc and notice that
-      // this address doesn't exist with any account
-      //navigate to campagin if it does
-      navigate("/onboarding");
-    }
-    connectWallet();
-  }, []);
+  // React.useEffect(() => {
+  //   const connectWallet = async () => {
+  //     const contract = await initContract();
+  //     setContract(contract);
+  //     setIsLoading(false);
+  //   };
+  //   if (isLoading) {
+  //     navigate("/loading");
+  //   } else if (!contract) {
+  //     navigate("/connect-wallet");
+  //   } else {
+  //     //TODO: navigate to onboarding after i fetch the contratc and notice that
+  //     // this address doesn't exist with any account
+  //     //navigate to campagin if it does
+  //     navigate("/onboarding");
+  //   }
+  //   connectWallet();
+  // }, []);
 
   return (
     <AppContext.Provider

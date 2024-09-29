@@ -27,6 +27,8 @@ import { useWriteContract, useAccount } from "wagmi";
 import { config } from "../../utils/wagmi";
 import contractAbi from "../../contract/CrowdFunding-abi.json";
 import { BackgroundBeams } from "../../animations/background-beams";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 
 function Onboarding1() {
   const navigate = useNavigate();
@@ -70,6 +72,14 @@ function Onboarding1() {
         w={{ base: "100%", md: "70%" }}
         bgColor="primary.100"
       >
+         <ConnectButton
+            chainStatus="none"
+            accountStatus={{
+              smallScreen: "avatar",
+              largeScreen: "avatar",
+            }}
+          />
+          
         <ArrowBackIcon
           zIndex={10000000000}
           mb={4}
@@ -80,6 +90,7 @@ function Onboarding1() {
             setStep((prev: number) => prev - 1);
           }}
         />
+         
         {step === 1 && <Step1 />}
         {step === 2 && <Onboarding2 />}
         {step === 3 && <Onboarding3 />}
