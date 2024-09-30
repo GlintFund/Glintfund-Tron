@@ -35,7 +35,7 @@ export const currency = [
       'Blockchain technology to create and run decentralized digital applications.',
   },
   {
-    image: '/public/img/Zeta_img.png',
+    image: '/img/Zeta_img.png',
     name: 'Zeta',
     abbr: 'ZET',
     description:

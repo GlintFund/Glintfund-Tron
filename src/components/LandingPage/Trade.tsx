@@ -3,10 +3,9 @@ import { currency } from './data';
 import { IoIosArrowForward } from 'react-icons/io'
 
 const Trade = () => {
-  // item name state
-  // const [itemName, setItemName] = useState('Bitcoin');
+
   return (
-  <section className='section  bg-gradient-to-b from-[#f8f9fb] to-[#fafbff] text-darkblue'>
+  <section className='section  bg-gradient-to-b from-[#f8f9fb] to-[#fafbff] text-customPurple'>
     <div className='container mx-auto'>
       <h2 className='section-title text-center mb-16'>Trade securely and market the high growth
         cryptocurrencies.</h2>

@@ -27,7 +27,7 @@ import supabase from "../../Services/supabase";
 import Why from './Why';
 import Trade from './Trade';
 import Stats from './Stats';
-
+import Hero from "./Hero"
 const words = [
   {
     text: "Easily",
@@ -89,8 +89,23 @@ function LandingPage() {
   };
 
   return (
-    <>
-      <BackgroundBeams />
+    <div >
+      <Hero/>
+        <Stats />
+    <Why />
+    <Trade />
+        {/* <Box h="10vh"> */}
+          <Footer />
+        {/* </Box> */}
+      {/* </Box> */}
+    </div>
+  );
+}
+
+export default LandingPage;
+
+
+  {/*     <BackgroundBeams />
       <Box
         h="100vh"
         display="flex"
@@ -106,7 +121,7 @@ function LandingPage() {
           mx={{ sm: "auto", md: "5%" }}
           h="80vh"
         >
-          {/* left-side */}
+        
           <Flex
             gap={4}
             flexDir="column"
@@ -185,7 +200,7 @@ function LandingPage() {
             />
           )}
 
-          {/* right side */}
+      
           <Flex
             gap={4}
             flexDir="column"
@@ -223,16 +238,4 @@ function LandingPage() {
               </Button>
             </Show>
           </Flex>
-        </Flex>
-        <Stats />
-    <Why />
-    <Trade />
-        <Box h="10vh">
-          <Footer />
-        </Box>
-      </Box>
-    </>
-  );
-}
-
-export default LandingPage;
+        </Flex> */}
