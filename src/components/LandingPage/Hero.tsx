@@ -53,13 +53,15 @@ const words = [
   ];
 
 function Hero ()  {
+  const navigate = useNavigate();
     const words_ = ["crowd funds", "manage NFT’s", "manage your balances"];
 
   return (
+
     <section>
           <BackgroundBeams />
       <div className='container mx-auto'>
-      <Navbar />
+     <Navbar/>
         <div className='flex flex-col items-center lg:flex-row mt-[30px]'>
        
           <div className='flex-1'>
@@ -69,7 +71,7 @@ function Hero ()  {
           <h1 className='text-[32px] lg:text-[56px] font-bold leading-tight mb-6'
           data-aos='fade-down'
           data-aos-delay='500'> 
-                 Easily raise funds on &nbsp;
+                 Decentralized crowdfunding with multi-currency support on &nbsp;
                  <span className="text-purple-500">Tron</span></h1>
           <p className='max-w-[440px] text-[16px] lg:text-[24px] leading-relaxed mb-8'
           data-aos='fade-down'
@@ -79,7 +81,9 @@ function Hero ()  {
               on GlintFund{" "}
          </p>
             <button className='btn gap-x-6 pl-6 text-sm lg:h-16 lg:text-base' data-aos='fade-down'
-          data-aos-delay='700'>
+          data-aos-delay='700'   onClick={() => {
+            navigate("/connect-wallet");
+          }}>
               Get Started
               <IoIosArrowDroprightCircle 
               className='text-2xl lg:text-3xl'/>
@@ -93,6 +97,7 @@ function Hero ()  {
         </div>
       </div>
     </section>
+
   );
 };
 

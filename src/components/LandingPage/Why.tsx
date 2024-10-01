@@ -16,10 +16,15 @@ const Why = () => {
           {/* text */}
         <div className='w-full'>
           <h2 className='section-title'>Why you should choose GLINT</h2>
-          <p className='section-subtitle'>Experience the next generation cryptocurrency platform.
-            No financial borders, extra fees, and fake reviews.
+          <p className='section-subtitle'>Unlock limitless fundraising potential with GLINT—no borders, no hidden fees, just seamless transactions and real results.
           </p>
+          <a
+          href="https://medium.com/@glintfund"
+          target="_blank"
+          rel="GlintFund Medium"
+        >
           <button className='btn px-6'>Learn more</button>
+        </a>
         </div>
       </div>
     </div>

@@ -89,15 +89,12 @@ function LandingPage() {
   };
 
   return (
-    <div >
+    <div className="bg-custom-gradient" >
       <Hero/>
         <Stats />
-    <Why />
-    <Trade />
-        {/* <Box h="10vh"> */}
-          <Footer />
-        {/* </Box> */}
-      {/* </Box> */}
+       <Why />
+       <Trade />
+      <Footer />
     </div>
   );
 }

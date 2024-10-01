@@ -12,6 +12,9 @@ module.exports = {
         DEFAULT: '1rem',
         lg: '0',
       },
+      height: {
+        DEFAULT: "100vh"
+      }
     },
     extend: {
 
@@ -51,6 +54,11 @@ module.exports = {
       boxShadow: {
         primary: '0px 20px 200px rgba(57, 23, 119, 0.05)',
       },
+
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(to bottom right, #0A0315, #2C014D)',
+      },
+      
       },
     
   },

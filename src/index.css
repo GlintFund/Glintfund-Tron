@@ -17,7 +17,7 @@ code {
 } */
 @layer base {
   body {
-    @apply font-sans bg-bgGradient text-white leading-normal;
+    @apply font-sans bg-custom-gradient text-white leading-normal h-[100vh];
   }
   .h3 {
     @apply text-[22px] lg:text-[32px] font-bold;

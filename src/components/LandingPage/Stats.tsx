@@ -20,8 +20,8 @@ const Stats =() => {
           {/* item text */}
           <div>
             <div className="text-2xl font-bold lg:text-[40px]
-            lg:mb-2">$30B</div>
-            <div className="text-gray">Digital Currency Exchanged</div> 
+            lg:mb-2">$100</div>
+            <div className="text-gray">Transactions Processed</div> 
           </div>
         </div>
         <div className="flex items-center gap-x-6">
@@ -33,8 +33,8 @@ const Stats =() => {
           {/* item text */}
           <div>
             <div className="text-2xl font-bold lg:text-[40px]
-            lg:mb-2">$10M+</div>
-            <div className="text-gray">Trusted Wallets Investor</div> 
+            lg:mb-2">200</div>
+            <div className="text-gray">Wallets Connected</div> 
           </div>
         </div>
         <div className="flex items-center gap-x-6">
