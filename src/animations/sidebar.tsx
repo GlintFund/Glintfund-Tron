@@ -110,7 +110,7 @@ export const MobileSidebar = ({
   children,
   ...props
 }: React.ComponentProps<"div">) => {
-  const { open, setOpen } = useSidebar();
+  const { open, setOpen } = useSidebar(); 
   return (
     <>
       <div
