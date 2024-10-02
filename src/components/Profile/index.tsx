@@ -36,6 +36,7 @@ import {
 import { useAccount } from "wagmi";
 import { useAppSelector } from "../../redux/hook";
 import { contractAddress } from "../../hooks";
+import {SidebarDemo} from "../Sidebar"
 
 const AnimatedCopyIcon = motion(CopyIcon);
 
@@ -96,12 +97,13 @@ function Index() {
   }, [data]);
 
   return (
-    <SideNav>
+    <SidebarDemo>
       {/*Selection */}
       <Flex
         mt={8}
         gap={8}
         overflowX={"scroll"}
+        justify={"center"}
         css={{
           "&::-webkit-scrollbar": {
             display: "none", // Hide scrollbar for Chrome, Safari, and Opera
@@ -109,6 +111,7 @@ function Index() {
           scrollbarWidth: "none", // Hide scrollbar for Firefox
           msOverflowStyle: "none", // Hide scrollbar for Internet Explorer and Edge
         }}
+     
       >
         <Hide below="md">
           <OptionCard
@@ -212,7 +215,7 @@ function Index() {
       <MobileNavBar/>
       </Flex>
       </Show> */}
-    </SideNav>
+    </SidebarDemo>
   );
 }
 
