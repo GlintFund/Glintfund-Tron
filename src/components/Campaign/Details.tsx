@@ -30,6 +30,7 @@ import { parseEther } from "viem";
 // import { getTokenPrice } from "../../utils/tokenPrice";
 import { getTokenConversion } from "../../utils/tokenPrice";
 import { zetachainAthensTestnet } from "viem/chains";
+import {SidebarDemo} from "../Sidebar"
 import { injected } from "wagmi/connectors";
 import { config } from "../../utils/wagmi";
 
@@ -105,8 +106,8 @@ function Details() {
   }
 
   return (
-    <SideNav>
-      <Box mx={6}>
+    <SidebarDemo>
+      <div className="mx-6 w-full ">
         <Flex my={6} justify="space-between">
           <Box onClick={() => navigate(-1)}>
             <IoIosArrowBack />
@@ -122,7 +123,7 @@ function Details() {
           px={8}
           borderRadius={"15px"}
           h={170}
-          bgColor="white"
+         bgColor="gray.200"
           gap={6}
           transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
           _hover={{
@@ -131,7 +132,7 @@ function Details() {
           }}
           cursor="pointer"
         >
-          <Flex color="#5E5E5E" fontWeight={600} justify="space-between">
+          <Flex color="#5E5E5E"  fontWeight={600} justify="space-between">
             <Text>{contractData[5]}</Text>
             <Text>
               {Math.floor(
@@ -175,8 +176,8 @@ function Details() {
             Send
           </Button>
         </Box>
-      </Box>
-    </SideNav>
+      </div>
+      </SidebarDemo>
   );
 }
 

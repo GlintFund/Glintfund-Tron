@@ -73,7 +73,7 @@ export function SidebarDemo({children}) {
           </div> */}
         </SidebarBody>
       </Sidebar>
-      <div className="overflow-y-scroll">
+      <div className="overflow-y-scroll w-full  bg-customPurple">
       {children}
       </div>
       {/* <Dashboard /> */}
