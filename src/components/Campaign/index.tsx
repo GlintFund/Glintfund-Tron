@@ -33,8 +33,8 @@
 //         h="100vh"
 //         overflowY={"scroll"}
 //         css={{
-//           "&::-webkit-scrollbar": {
-//             display: "none", // Hide scrollbar for Chrome, Safari, and Opera
+  //           "&::-webkit-scrollbar": {
+    //             display: "none", // Hide scrollbar for Chrome, Safari, and Opera
 //           },
 //           scrollbarWidth: "none",
 //           msOverflowStyle: "none",
@@ -109,8 +109,8 @@
 //   const random = Math.floor(Math.random() * pics.length);
 
 //   return (
-//     <Center>
-//       <Box
+  //     <Center>
+  //       <Box
 //         p="5"
 //         maxW="301px"
 //         borderRadius="md"
@@ -120,9 +120,9 @@
 //         transform="auto"
 //         _hover={{ transform: `scale(1.09)`, transition: "transform 0.3s ease" }}
 //         _active={{
-//           transform: `scale(1.09)`,
-//           transition: "transform 0.3s ease",
-//         }}
+  //           transform: `scale(1.09)`,
+  //           transition: "transform 0.3s ease",
+  //         }}
 //       >
 //         <Image
 //           w="271px"
@@ -163,32 +163,58 @@
 // / Dummy dashboard component with content
 import React from "react"
 import {SidebarDemo} from "../Sidebar"
+import { HoverEffect } from "../../animations/card-hover-effect";
+import { CardBody, CardContainer, CardItem } from "../../animations/3d-card";
+
 
 const Campaign = () => {
   return (
     <SidebarDemo>
-    <div className="flex flex-1">
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex gap-2">
-          {[...new Array(4)].map((i) => (
-            <div
-              key={"first-array" + i}
-              className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-            ></div>
-          ))}
-        </div>
-        <div className="flex gap-2 flex-1">
-          {[...new Array(2)].map((i) => (
-            <div
-              key={"second-array" + i}
-              className="h-full w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-            ></div>
-          ))}
-        </div>
-      </div>
+       <div className="bg-customPurple mx-auto px-8">
+      <HoverEffect items={projects} />
     </div>
     </SidebarDemo>
   );
 };
 
 export default Campaign
+
+
+export const projects = [
+  {
+    title: "Stripe",
+    description:
+      "A technology company that builds economic infrastructure for the internet.",
+    link: "https://stripe.com",
+  },
+  {
+    title: "Netflix",
+    description:
+      "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
+    link: "https://netflix.com",
+  },
+  {
+    title: "Google",
+    description:
+      "A multinational technology company that specializes in Internet-related services and products.",
+    link: "https://google.com",
+  },
+  {
+    title: "Meta",
+    description:
+      "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
+    link: "https://meta.com",
+  },
+  {
+    title: "Amazon",
+    description:
+      "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
+    link: "https://amazon.com",
+  },
+  {
+    title: "Microsoft",
+    description:
+      "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
+    link: "https://microsoft.com",
+  },
+];

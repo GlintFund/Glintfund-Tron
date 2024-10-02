@@ -111,37 +111,37 @@ export const AppProvider = ({ children }: any) => {
 
   const getTransactions = async () => {};
 
-  React.useEffect(() => {
-    const userExist = campaigns?.filter(
-      (campaign: any) => campaign.admin === address
-    );
-    // console.log(userExist, "UserExist");
-    // console.log(campaigns, "camp");
-    if (userExist === undefined) {
-      return;
-    }
-    if (!address && location.pathname.includes("details/")) {
-      return;
-    } else if (!address) {
-      navigate("/");
-    } else if (userExist.length > 0) {
-      var user = {
-        address,
-        name: userExist[0].name,
-        amountRequired: Number(userExist[0].amount_required),
-        amountDonated: Number(userExist[0].amount_donated) / 10 ** 18,
-        description: userExist[0].description,
-        donationComplete: userExist[0].donation_complete,
-        id: userExist[0].id,
-      };
-      dispatch(addCampaign(user));
-      const previousPage = location.state?.from || "campaign";
-      console.log(previousPage);
-      navigate(previousPage);
-    } else if (userExist.length === 0) {
-      navigate("/");
-    }
-  }, [address, isLaoding_]);
+  // React.useEffect(() => {
+  //   const userExist = campaigns?.filter(
+  //     (campaign: any) => campaign.admin === address
+  //   );
+  //   // console.log(userExist, "UserExist");
+  //   // console.log(campaigns, "camp");
+  //   if (userExist === undefined) {
+  //     return;
+  //   }
+  //   if (!address && location.pathname.includes("details/")) {
+  //     return;
+  //   } else if (!address) {
+  //     navigate("/");
+  //   } else if (userExist.length > 0) {
+  //     var user = {
+  //       address,
+  //       name: userExist[0].name,
+  //       amountRequired: Number(userExist[0].amount_required),
+  //       amountDonated: Number(userExist[0].amount_donated) / 10 ** 18,
+  //       description: userExist[0].description,
+  //       donationComplete: userExist[0].donation_complete,
+  //       id: userExist[0].id,
+  //     };
+  //     dispatch(addCampaign(user));
+  //     const previousPage = location.state?.from || "campaign";
+  //     console.log(previousPage);
+  //     navigate(previousPage);
+  //   } else if (userExist.length === 0) {
+  //     navigate("/");
+  //   }
+  // }, [address, isLaoding_]);
 
   // React.useEffect(() => {
   //   const connectWallet = async () => {
