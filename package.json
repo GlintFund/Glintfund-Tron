@@ -58,6 +58,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
+    "install": "npm install --legacy-peer-deps",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
