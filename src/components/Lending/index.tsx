@@ -49,7 +49,7 @@ function Lending () {
                 <div className="w-1 h-screen" />
                 {/* History */}
                 <div className="bg-custom-gradient h-screen mt-6 border border-transparent rounded-lg py-6 px-6 hidden sm:block w-[30%] ">
-                    <h1 className="font-bold flex justify-center items-center mb-8">Lending History</h1>
+                    <h1 className="font-bold flex justify-center items-center mb-8">{lendOption ? "Lending" : "Borrowing"} History</h1>
                     <HistoryCard />
                     <HistoryCard />
                     <HistoryCard />
