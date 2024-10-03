@@ -13,13 +13,15 @@ import Details from "./components/Campaign/Details";
 import MessagePage from "./pages/Message";
 import ConnectWallet from "./components/LandingPage/ConnectWallet";
 import Loading from "./pages/Loading";
+import Lending from "./pages/Lending";
+
 const App = () => {
   useEffect(()=> {
     Aos.init({
       duration: 2500,
       delay: 400,
     });
-  });
+  },[]);
 
   return (
     <React.Fragment>
@@ -32,6 +34,7 @@ const App = () => {
         <Route path="campaign" element={<Campaign />} />
         <Route path="details/:id" element={<Details />} />
         <Route path="message" element={<MessagePage />} />
+        <Route path="lending" element={<Lending/>} />
       </Routes>
     </React.Fragment>
   );
