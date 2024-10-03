@@ -14,6 +14,7 @@ contract Glint {
     bool donation_complete;
     uint256 endTime;
     bool refundable;
+    string donationType;
   }
 
   struct UserProfile {
@@ -23,6 +24,7 @@ contract Glint {
     string[] social_links;
     bool verified;
     bool flagged;
+    string[] interests;
   }
 
   uint256 public campaignCounter;
@@ -78,7 +80,8 @@ contract Glint {
     uint64 amountRequired, 
     string[] memory _tags,
     uint256 _endTime,
-    bool _refundable
+    bool _refundable,
+    string memory _donationType
     ) external {
       campaignCounter++;
       campaigns[campaignCounter] = Campaign({
@@ -91,7 +94,8 @@ contract Glint {
         amount_donated: 0,
         donation_complete: false,
         endTime : _endTime,
-        refundable : _refundable
+        refundable : _refundable,
+        donationType : _donationType
       });
 
       userCampaigns[msg.sender].push(campaignCounter);
@@ -107,6 +111,26 @@ contract Glint {
         _refundable
       );
   }
+
+  // Get all campaigns
+    function getAllCampaigns() external view returns (Campaign[] memory) {
+        Campaign[] memory allCampaigns = new Campaign[](campaignCounter);
+        for (uint256 i = 1; i <= campaignCounter; i++) {
+            allCampaigns[i - 1] = campaigns[i];
+        }
+        return allCampaigns;
+    }
+
+    // Get a specific campaign
+    function getCampaign(
+        uint256 campaignId
+    ) external view returns (Campaign memory) {
+        require(
+            campaignId > 0 && campaignId <= campaignCounter,
+            "Campaign does not exist"
+        );
+        return campaigns[campaignId];
+    }
 
 
 }
