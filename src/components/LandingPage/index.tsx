@@ -24,7 +24,10 @@ import Lottie from "lottie-react";
 import ICON from "../../animations/GIF/home-icon.json";
 import WaitlistModal from "../Waitlist/WaitlistModal.jsx";
 import supabase from "../../Services/supabase";
-
+import Why from './Why';
+import Trade from './Trade';
+import Stats from './Stats';
+import Hero from "./Hero"
 const words = [
   {
     text: "Easily",
@@ -43,7 +46,7 @@ const words = [
     className: "text-white sm:text-4xl",
   },
   {
-    text: "ZetaChain.",
+    text: "Tron.",
     className: "text-purple-500 dark:text-purple-500 sm:text-4xl",
   },
 ];
@@ -86,8 +89,20 @@ function LandingPage() {
   };
 
   return (
-    <>
-      <BackgroundBeams />
+    <div className="bg-custom-gradient" >
+      <Hero/>
+        <Stats />
+       <Why />
+       <Trade />
+      <Footer />
+    </div>
+  );
+}
+
+export default LandingPage;
+
+
+  {/*     <BackgroundBeams />
       <Box
         h="100vh"
         display="flex"
@@ -103,7 +118,7 @@ function LandingPage() {
           mx={{ sm: "auto", md: "5%" }}
           h="80vh"
         >
-          {/* left-side */}
+        
           <Flex
             gap={4}
             flexDir="column"
@@ -182,7 +197,7 @@ function LandingPage() {
             />
           )}
 
-          {/* right side */}
+      
           <Flex
             gap={4}
             flexDir="column"
@@ -220,13 +235,4 @@ function LandingPage() {
               </Button>
             </Show>
           </Flex>
-        </Flex>
-        <Box h="10vh">
-          <Footer />
-        </Box>
-      </Box>
-    </>
-  );
-}
-
-export default LandingPage;
+        </Flex> */}

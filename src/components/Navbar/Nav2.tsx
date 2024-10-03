@@ -1,49 +1,41 @@
 import React from "react";
-import { Box, Text, Link, Flex, Button, Hide } from "@chakra-ui/react";
+import Logo from "../Logo";
 
 function Nav2() {
   return (
-    <Flex justify="space-between" mx="48px" mt="24px">
-      <Flex>
-        <Text size="24px" fontStyle="bold" fontWeight={700}>
-          GLINTFUND
-        </Text>
-      </Flex>
-      <Hide below="md">
-        <Flex gap={12} align="center" justify="center"  zIndex={100000}>
-          <Button
-            borderRadius={"10px"}
-            variant={"purple"}
-            cursor={"pointer"}
-            px={3}
-            py={5}
-            borderColor={"purple"}
-          >
-            Home
-          </Button>
-          <a
-           href="https://medium.com/@glintfund"
-           target="_blank"
-           rel="GlintFund Medium"
-         >
-          <Text cursor={"pointer"} >Learn</Text> </a>
-          <a
+    <div className="flex justify-between mt-6">
+      <div className="flex">
+        <p className="text-2xl font-bold font-extrabold">
+          <Logo />
+        </p>
+      </div>
+      <div className="hidden md:flex gap-12 items-center justify-center z-[100000]">
+        <button className="btn">
+          Home
+        </button>
+        <a
+          href="https://medium.com/@glintfund"
+          target="_blank"
+          rel="GlintFund Medium"
+        >
+          <p className="cursor-pointer">Learn</p>
+        </a>
+        <a
           href="https://discord.gg/c7zQwM5h2E"
           target="_blank"
           rel="GlintFund Discord"
         >
-          <Text cursor={"pointer"}>Community</Text>
-          </a>
-          <a
+          <p className="cursor-pointer">Community</p>
+        </a>
+        <a
           href="https://x.com/glintfund"
           target="_blank"
           rel="GlintFund Twitter"
         >
-          <Text cursor={"pointer"}>Support</Text>
-          </a>
-        </Flex>
-      </Hide>
-    </Flex>
+          <p className="cursor-pointer">Support</p>
+        </a>
+      </div>
+    </div>
   );
 }
 

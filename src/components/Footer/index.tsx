@@ -1,37 +1,29 @@
 import React from "react";
-import { Box, Text, Link, Flex, Button } from "@chakra-ui/react";
-import { FaXTwitter, FaGithub,  FaMedium } from "react-icons/fa6";
+import { FaXTwitter, FaGithub, FaMedium } from "react-icons/fa6";
 import { FaDiscord } from "react-icons/fa";
 
 function Footer() {
   return (
-    <Flex
-      justify={{ md: "space-evenly" }}
-      flexDirection={{ base: "column", md: "row" }}
-      align={{ base: "center" }}
-      mt={8}
-    >
-      <Flex>
-        <Text zIndex={1000000} size="24px" fontWeight={500}>
+    <div className="flex flex-col md:flex-row justify-evenly items-center my-8 gap-5">
+      <div className="flex">
+        <p className="text-2xl font-medium z-[1000000]">
           Powered by&nbsp;
           <a
             href="https://zetachain.com"
             target="_blank"
             rel="Zetachain"
-            className="text-green-800 font-bold z-100000"
+            className="text-red-800 font-bold"
           >
-            Zetachain
+            Tron
           </a>
-        </Text>
-      </Flex>
-      <Flex>
-        <Text cursor={"pointer"}>Terms &nbsp;</Text>
-        <Text color="purple" cursor={"pointer"}>
-          and &nbsp;
-        </Text>
-        <Text cursor={"pointer"}>Conditions</Text>
-      </Flex>
-      <Flex gap={5} zIndex={100000}>
+        </p>
+      </div>
+      <div className="flex">
+        <p className="cursor-pointer">Terms &nbsp;</p>
+        <p className="text-purple-500 cursor-pointer">and &nbsp;</p>
+        <p className="cursor-pointer">Conditions</p>
+      </div>
+      <div className="flex gap-7 z-[100000]">
         <a
           href="https://x.com/glintfund"
           target="_blank"
@@ -39,7 +31,6 @@ function Footer() {
         >
           <FaXTwitter />
         </a>
-
         <a
           href="https://discord.gg/c7zQwM5h2E"
           target="_blank"
@@ -52,17 +43,17 @@ function Footer() {
           target="_blank"
           rel="GlintFund Github"
         >
-        <FaGithub />
+          <FaGithub />
         </a>
         <a
           href="https://medium.com/@glintfund"
           target="_blank"
           rel="GlintFund Medium"
         >
-        <FaMedium />
+          <FaMedium />
         </a>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 }
 

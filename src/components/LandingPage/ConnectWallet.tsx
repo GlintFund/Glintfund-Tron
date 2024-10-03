@@ -16,6 +16,7 @@ import Footer from "../Footer";
 import { useAccount } from "wagmi";
 import { BackgroundBeams } from "../../animations/background-beams";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { BackgroundLines } from "../../animations/background-lines";
 
 function ConnectWallet() {
   const navigate = useNavigate();
@@ -23,11 +24,11 @@ function ConnectWallet() {
   console.log(account);
 
   return (
-    <Box h="100vh">
-      <BackgroundBeams />
-      <Box h={"85vh"}>
+      <BackgroundLines className="flex  bg-custom-gradient  w-full flex-col px-4">
+            <div className="flex flex-col h-screen justify-between">
+   
         <Navbar />
-        <Container mt={"30vh"}>
+        <Container >
           <Center flexDirection="column">
             <Text
               fontWeight={500}
@@ -35,16 +36,18 @@ function ConnectWallet() {
               fontSize={{ base: "24px", md: "32px" }}
               mx={"8%"}
             >
-              Connect your wallet to raise funds with Zetachain and other assets
+              Connect your wallet to raise funds with Tron and other assets
             </Text>
             <Flex mt={8}>
               <ConnectButton />
             </Flex>
           </Center>
         </Container>
-      </Box>
+
       <Footer />
-    </Box>
+      </div>
+   
+   </BackgroundLines>
   );
 }
 

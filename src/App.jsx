@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+
+
+import Aos from 'aos';
+import 'aos/dist/aos.css'
+
 import LandingPage from "./pages/LandingPage";
 import Profile from "./pages/Profile";
 import Onboarding1 from "./components/Onboarding/Onboarding1";
@@ -9,20 +14,12 @@ import MessagePage from "./pages/Message";
 import ConnectWallet from "./components/LandingPage/ConnectWallet";
 import Loading from "./pages/Loading";
 const App = () => {
-  // Function to open TronLink upon button click
-  // const handleConnectWallet = async () => {
-  //   if (window.tronWeb && window.tronWeb.ready) {
-  //     try {
-  //       const address = window.tronWeb.defaultAddress.base58;
-  //       setWalletAddress(address);
-  //       console.log("Wallet address:", address);
-  //     } catch (error) {
-  //       console.error("Failed to fetch wallet address", error);
-  //     }
-  //   } else {
-  //     alert("TronLink is not detected or unlocked");
-  //   }
-  // };
+  useEffect(()=> {
+    Aos.init({
+      duration: 2500,
+      delay: 400,
+    });
+  });
 
   return (
     <React.Fragment>
