@@ -4,7 +4,7 @@ import { FaDiscord } from "react-icons/fa";
 
 function Footer() {
   return (
-    <div className="flex flex-col md:flex-row justify-evenly items-center my-8 gap-5">
+    <div className="flex flex-col md:flex-row justify-evenly items-center mt-8 pb-5 mb-5 gap-5">
       <div className="flex">
         <p className="text-2xl font-medium z-[1000000]">
           Powered by&nbsp;
