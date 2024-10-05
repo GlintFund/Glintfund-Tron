@@ -1,26 +1,50 @@
-import TronWeb from "tronweb";
+// const waitTron = () => {
+//   return new Promise((resolve, reject) => {
+//     let attempts = 0,
+//       maxAttempts = 2;
+//     const checkTron = async () => {
+//       console.log("Checking for TronLink...", window.tronWeb.ready);
 
-const waitTron = () => {
-  return new Promise((resolve, reject) => {
-    let attempts = 0,
-      maxAttempts = 100;
-    const checkTron = () => {
-      console.log("Checking for TronLink...", window.tronWeb);
-      if (window.tronWeb && window.tronWeb.ready) {
-        console.log("TronLink detected and ready");
-        resolve(true);
-        return;
-      }
-      attempts++;
-      if (attempts >= maxAttempts) {
-        reject(false);
-        return;
-      }
-      setTimeout(checkTron, 100);
-    };
-    checkTron();
-  });
-};
+//       if (window.tronWeb && window.tronWeb.ready) {
+//         console.log("TronLink detected and ready");
+//         resolve(true);
+//         return;
+//       }
+//       attempts++;
+//       if (attempts >= maxAttempts && window.tronLink) {
+//            // Prompt the user to connect their wallet
+//            try {
+//             await window.tronLink.request({ method: 'tron_requestAccounts' });
+//             const userAddress = window.tronWeb.defaultAddress.base58;
+//             console.log('Wallet connected: ' + userAddress);
+//             alert('Wallet connected: ' + userAddress);
+//         } catch (error) {
+//             console.error('Failed to connect wallet:', error);
+//             alert('Connection failed: ' + error.message);
+//         }
+
+//         reject(true);
+//         return;
+//       }
+//       setTimeout(checkTron, 100);
+//     };
+//     checkTron();
+//   });
+// };
+
+async function getTronWeb() {
+  let tronWeb;
+  console.log(window.tronWeb)
+  if (window.tronLink.ready) {
+    tronWeb = tronLink.tronWeb;
+  } else {
+    const res = await tronLink.request({ method: 'tron_requestAccounts' });
+    if (res.code === 200) {
+      tronWeb = tronLink.tronWeb;
+    }
+  }
+  return tronWeb;
+}
 
 const loadWallet = () => {
   if (window.tronWeb && window.tronWeb.ready) {
@@ -34,14 +58,21 @@ const loadWallet = () => {
 
 export const initContract = async () => {
   try {
-    await waitTron();
+    await getTronWeb();
     const tronWeb = window.tronWeb; // Use the injected instance
-    const contractHEXAddress = "41babe7050d3593a9ece4b00b4a8157f0983b3d929";
+    const contractHEXAddress = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
     const contract = await tronWeb.contract().at(contractHEXAddress);
     console.log("Contract loaded:", contract);
     return contract;
   } catch (error) {
-    alert("Please login into TronLink extension");
+    console.log("error",error)
+    console.log("Please login into TronLink extension");
     return null;
   }
 };
+
+function isTronLinkInstalled() {
+  return typeof window.tronWeb !== 'undefined';
+}
+
+

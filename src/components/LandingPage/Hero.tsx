@@ -71,7 +71,7 @@ function Hero ()  {
           <h1 className='text-[32px] lg:text-[56px] font-bold leading-tight mb-6'
           data-aos='fade-down'
           data-aos-delay='500'> 
-                 Decentralized crowdfunding with multi-currency support on &nbsp;
+                 Decentralized crowdfunding with multi-currency support on&nbsp;
                  <span className="text-purple-500">Tron</span></h1>
           <p className='max-w-[440px] text-[16px] lg:text-[24px] leading-relaxed mb-8'
           data-aos='fade-down'

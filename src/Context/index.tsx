@@ -14,6 +14,8 @@ import { useGetAllCampaigns, contractAddress } from "../hooks/index";
 import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
+import abi from "../contract/Tron_CrowdFunding-abi.json";
+const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
 
 type bioT = {
   name: string;
@@ -23,7 +25,7 @@ type bioT = {
 export const AppContext = React.createContext<{
   step: number;
   setStep: any;
-  smartContract: any;
+  getSmartContract: any;
   user: any;
   transactionPending: any;
   getUser: any;
@@ -41,10 +43,11 @@ export const AppContext = React.createContext<{
   //tron
   walletAddress: any;
   setWalletAddress: any;
+  connectWallet: any;
 }>({
   step: 1,
   setStep: undefined,
-  smartContract: undefined,
+  getSmartContract: undefined,
   user: undefined,
   transactionPending: undefined,
   getUser: undefined,
@@ -62,6 +65,7 @@ export const AppContext = React.createContext<{
   //tron
   walletAddress: "",
   setWalletAddress: undefined,
+  connectWallet: undefined,
 });
 
 export const AppProvider = ({ children }: any) => {
@@ -97,7 +101,13 @@ export const AppProvider = ({ children }: any) => {
 
   const getUser = () => {};
 
-  const smartContract = async () => {};
+  const getSmartContract = async () => {
+    window.tronWeb.setFullNode("https://nile.trongrid.io");
+
+    if (window.tronWeb.ready) {
+      return await window.tronWeb.contract(abi.entrys, contractAddress_);
+    }
+  };
 
   const initUser = async () => {
     console.log(bio, tags, amount, address);
@@ -110,6 +120,42 @@ export const AppProvider = ({ children }: any) => {
   const donate = async (val: number) => {};
 
   const getTransactions = async () => {};
+
+  async function connectWallet() {
+    if (typeof window.tronWeb !== "undefined") {
+      if (window.tronWeb.ready) {
+        const isOnNileTestnet =
+          window.tronWeb.fullNode.host === "https://api.nileex.io";
+        if (!isOnNileTestnet) {
+          toast.error("Please switch to the Nile Testnet in TronLink.");
+          return;
+        }
+        console.log(
+          "TronLink is connected:",
+          window.tronWeb.defaultAddress.base58
+        );
+        setWalletAddress(window.tronWeb.defaultAddress.base58);
+      } else {
+        toast.error("TronLink is installed but not connected.");
+        // Optionally trigger connection
+        await window.tronLink.request({ method: "tron_requestAccounts" });
+        if (window.tronWeb.ready) {
+          const isOnNileTestnet =
+            window.tronWeb.fullNode.host === "https://api.nileex.io";
+          if (!isOnNileTestnet) {
+            toast.error("Please switch to the Nile Testnet in TronLink.");
+            return;
+          }
+
+          console.log("Connected:", window.tronWeb.defaultAddress.base58);
+          setWalletAddress(window.tronWeb.defaultAddress.base58);
+        }
+      }
+    } else {
+      console.log("TronLink is not installed.");
+      toast.error("Please install TronLink to interact with this dApp.");
+    }
+  }
 
   // React.useEffect(() => {
   //   const userExist = campaigns?.filter(
@@ -145,8 +191,8 @@ export const AppProvider = ({ children }: any) => {
 
   // React.useEffect(() => {
   //   const connectWallet = async () => {
-  //     const contract = await initContract();
-  //     setContract(contract);
+  //     // const contract = await checkTronLink();
+  //     // setContract(contract);
   //     setIsLoading(false);
   //   };
   //   if (isLoading) {
@@ -169,7 +215,7 @@ export const AppProvider = ({ children }: any) => {
         transactionPending,
         step,
         setStep,
-        smartContract,
+        getSmartContract,
         getUser,
         tags,
         setTags,
@@ -184,6 +230,7 @@ export const AppProvider = ({ children }: any) => {
         donate,
         walletAddress,
         setWalletAddress,
+        connectWallet,
       }}
     >
       {children}

@@ -28,3 +28,7 @@ export type PriceT = {
   usd: string;
   zeta: number;
 };
+
+export type TronDataSliceT = {
+  walletAddress: string
+}
