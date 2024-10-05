@@ -26,19 +26,6 @@ function ConnectWallet() {
   const { connectWallet, getSmartContract, walletAddress } =
     useContext(AppContext);
 
-  const getCampCounter = async () => {
-    try {
-      const smartContract = await getSmartContract();
-      console.log(smartContract);
-      // Call the campaignCounter function (Assuming it is a read function)
-      const didi = await smartContract.campaignCounter().call();
-      console.log("campaign counter", didi.toNumber());
-      console.log("methods", await smartContract.methods);
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
-
   return (
     <BackgroundLines className="flex  bg-custom-gradient  w-full flex-col px-4">
       <div className="flex flex-col h-screen justify-between">
@@ -55,8 +42,6 @@ function ConnectWallet() {
             </Text>
             <Flex mt={8}>
               <WalletButton />
-
-              {/* <ConnectButton /> */}
             </Flex>
           </Center>
         </Container>

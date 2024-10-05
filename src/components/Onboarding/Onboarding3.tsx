@@ -13,9 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../Context";
-import { config } from "../../utils/wagmi";
-import { injected } from "wagmi/connectors";
-import { useGetACampaign } from "../../hooks";
 import toast from "react-hot-toast";
 
 function Onboarding3() {

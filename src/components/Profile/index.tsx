@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Text,
@@ -24,7 +24,6 @@ import contractAbi from "../../contract/CrowdFunding-abi.json";
 import toast from "react-hot-toast";
 import MobileNavBar from "../Navbar/MobileNavbar";
 import { getTokenConversion } from "../../utils/tokenPrice";
-
 // import { Transactions } from "../Campaign/Details";
 import SideNav from "../SideNav";
 import {
@@ -36,7 +35,7 @@ import {
 import { useAccount } from "wagmi";
 import { useAppSelector } from "../../redux/hook";
 import { contractAddress } from "../../hooks";
-import {SidebarDemo} from "../Sidebar"
+import { SidebarDemo } from "../Sidebar";
 
 const AnimatedCopyIcon = motion(CopyIcon);
 
@@ -96,6 +95,18 @@ function Index() {
     }
   }, [data]);
 
+  const { getSmartContract } = useContext(AppContext);
+
+  React.useEffect(() => {
+    const getCamp = async () => {
+      const smartContract = await getSmartContract();
+      const data = await smartContract.getAllCampaigns().call();
+      console.log("campaigns", data);
+    };
+
+    getCamp();
+  }, []);
+
   return (
     <SidebarDemo>
       {/*Selection */}
@@ -111,7 +122,6 @@ function Index() {
           scrollbarWidth: "none", // Hide scrollbar for Firefox
           msOverflowStyle: "none", // Hide scrollbar for Internet Explorer and Edge
         }}
-     
       >
         <Hide below="md">
           <OptionCard
