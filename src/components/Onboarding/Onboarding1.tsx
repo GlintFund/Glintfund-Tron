@@ -17,31 +17,12 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../Context";
 import Onboarding2 from "./Onboarding2";
 import Onboarding3 from "./Onboarding3";
-import {
-  useGetAllUsers,
-  useGetUserProfile,
-  useGetACampaign,
-  useGetAllCampaigns,
-} from "../../hooks";
-import { useWriteContract, useAccount } from "wagmi";
-import { config } from "../../utils/wagmi";
-import contractAbi from "../../contract/CrowdFunding-abi.json";
 import { BackgroundBeams } from "../../animations/background-beams";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-
+import WalletButton from "../WalletButton";
 
 function Onboarding1() {
   const navigate = useNavigate();
   const { step, setStep } = React.useContext(AppContext);
-  const { address } = useAccount();
-
-  // const { data } = useGetAllCampaigns();
-  // console.log("all camp", data);
-  // const { data: profile } = useGetUserProfile(address);
-  // console.log("profile", profile);
-  // const { data: allUsers } = useGetAllUsers();
-
-  // console.log("all users", allUsers);
 
   return (
     <Flex>
@@ -72,14 +53,8 @@ function Onboarding1() {
         w={{ base: "100%", md: "70%" }}
         bgColor="primary.100"
       >
-         <ConnectButton
-            chainStatus="none"
-            accountStatus={{
-              smallScreen: "avatar",
-              largeScreen: "avatar",
-            }}
-          />
-          
+        <WalletButton />
+
         <ArrowBackIcon
           zIndex={10000000000}
           mb={4}
@@ -90,7 +65,7 @@ function Onboarding1() {
             setStep((prev: number) => prev - 1);
           }}
         />
-         
+
         {step === 1 && <Step1 />}
         {step === 2 && <Onboarding2 />}
         {step === 3 && <Onboarding3 />}
@@ -132,17 +107,16 @@ function Step1() {
           Where will the funding go?
         </Text>
         <Text pt={4} fontSize="16px">
-          funding are 100 percent on-chain, secure and tamper-proof on the
-          Zetachain Blockchain. You can fund with any of the compatible tokens
-          on Zetachain
+          funding are 100 percent on-chain, secure and tamper-proof on the Tron
+          Blockchain. You can fund with any of the compatible tokens on Tron
         </Text>
       </Box>
       {/* pick funding type */}
       <Flex pt={4}>
-        <Select size="lg" variant="outline" placeholder="Zeta">
+        <Select size="lg" variant="outline" placeholder="TRX">
           {/* <option value="Zeta">Zeta</option> */}
-          <option value="BNB">BNB</option>
-          <option value="BTC">BTC</option>
+          <option value="BNB">USDC</option>
+          <option value="BTC">JPT</option>
         </Select>
         {/* <Input value={publicKey?.toString()} isReadOnly size="lg" /> */}
       </Flex>

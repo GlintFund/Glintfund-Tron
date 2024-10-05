@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { AppContext } from "../../Context/index";
 import toast from "react-hot-toast";
 
 const WalletButton = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isWrongNetwork, setIsWrongNetwork] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const { connectWallet: conectWaletFnc } = useContext(AppContext);
 
   useEffect(() => {
     // Check if the wallet is already connected and get its address
@@ -29,6 +27,7 @@ const WalletButton = () => {
       if (newNetwork.fullNode === "https://api.nileex.io") {
         setIsWrongNetwork(false);
       } else {
+        setIsWrongNetwork(true);
         toast.error("Please switch to Nile Testnet in TronLink.");
       }
     }
