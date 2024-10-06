@@ -101,7 +101,9 @@ function Index() {
     const getCamp = async () => {
       const smartContract = await getSmartContract();
       const data = await smartContract.getAllCampaigns().call();
+      const data_ = await smartContract.campaignCounter().call();
       console.log("campaigns", data);
+      console.log("campaignCount", data_);
     };
 
     getCamp();

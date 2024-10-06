@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 
+const network = "https://api.shasta.trongrid.io";
+
 const WalletButton = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isWrongNetwork, setIsWrongNetwork] = useState(false);
@@ -24,7 +26,7 @@ const WalletButton = () => {
       event.data.message.action === "setNode"
     ) {
       const newNetwork = event.data.message.data.node;
-      if (newNetwork.fullNode === "https://api.nileex.io") {
+      if (newNetwork.fullNode === network) {
         setIsWrongNetwork(false);
       } else {
         setIsWrongNetwork(true);
@@ -57,7 +59,7 @@ const WalletButton = () => {
 
   const checkNetwork = () => {
     // Check if TronLink is on the Nile Testnet (network ID for Nile is 2)
-    if (window.tronWeb.fullNode.host.includes("nile")) {
+    if (window.tronWeb.fullNode.host.includes("shasta")) {
       setIsWrongNetwork(false);
     } else {
       toast.error("Please switch to the Nile Testnet in TronLink.");

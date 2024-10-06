@@ -11,12 +11,13 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 import { AppContext } from "../../Context";
-import { getTokenConversion } from "../../utils/tokenPrice";
+import { getTokenConversionPrice } from "../../utils/tokenPrice";
 import { useAppSelector, useAppDispatch } from "../../redux/hook";
 import { addPrice } from "../../redux/slice/PriceSlice";
 
 function Onboarding2() {
-  const { setStep, amount, setAmount } = React.useContext(AppContext);
+  const { setStep, amount, setAmount, coinToRaiseIn } =
+    React.useContext(AppContext);
   console.log(amount);
   const format = (val: number) => `T` + val;
   const parse = (val: string) => val.replace(/^\T/, "");
@@ -30,7 +31,8 @@ function Onboarding2() {
 
   React.useEffect(() => {
     const cc = async () => {
-      const val = await getTokenConversion(amount);
+      console.log(coinToRaiseIn)
+      const val = await getTokenConversionPrice(amount, coinToRaiseIn.name);
       setConverstion(val);
     };
 

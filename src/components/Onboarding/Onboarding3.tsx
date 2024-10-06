@@ -131,7 +131,7 @@ function Onboarding3() {
           >
             <option value="fundraising">Fundraising</option>
             <option value="donationLink">Donation Link</option>
-            <option value="paymentLink">Payment Link</option>
+            <option value="paymentLink">Payment</option>
           </Select>
         </FormControl>
       </Flex>

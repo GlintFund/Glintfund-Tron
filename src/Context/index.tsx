@@ -15,7 +15,8 @@ import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
-const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+// const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
 
 type bioT = {
   name: string;
@@ -44,6 +45,8 @@ export const AppContext = React.createContext<{
   walletAddress: any;
   setWalletAddress: any;
   connectWallet: any;
+  coinToRaiseIn: any;
+  setCoinToRaiseIn: any;
 }>({
   step: 1,
   setStep: undefined,
@@ -66,7 +69,18 @@ export const AppContext = React.createContext<{
   walletAddress: "",
   setWalletAddress: undefined,
   connectWallet: undefined,
+  coinToRaiseIn: undefined,
+  setCoinToRaiseIn: undefined,
 });
+
+const network = "https://api.shasta.trongrid.io";
+// const network = "https://nile.trongrid.io"
+
+type SupportedCoins =
+  | { id: "TRX"; name: "tron" }
+  | { id: "USDT"; name: "tether" }
+  | { id: "BTT"; name: "BitTorrent" }
+  | { id: "SUN"; name: "SUN TOken" };
 
 export const AppProvider = ({ children }: any) => {
   const [step, setStep] = React.useState<number>(1);
@@ -89,6 +103,10 @@ export const AppProvider = ({ children }: any) => {
   const [walletAddress, setWalletAddress] = React.useState("");
   const [contract, setContract] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [coinToRaiseIn, setCoinToRaiseIn] = React.useState<SupportedCoins>({
+    id: "TRX",
+    name: "tron",
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -102,7 +120,7 @@ export const AppProvider = ({ children }: any) => {
   const getUser = () => {};
 
   const getSmartContract = async () => {
-    window.tronWeb.setFullNode("https://nile.trongrid.io");
+    window.tronWeb.setFullNode(network);
 
     if (window.tronWeb.ready) {
       return await window.tronWeb.contract(abi.entrys, contractAddress_);
@@ -124,8 +142,7 @@ export const AppProvider = ({ children }: any) => {
   async function connectWallet() {
     if (typeof window.tronWeb !== "undefined") {
       if (window.tronWeb.ready) {
-        const isOnNileTestnet =
-          window.tronWeb.fullNode.host === "https://api.nileex.io";
+        const isOnNileTestnet = window.tronWeb.fullNode.host === network;
         if (!isOnNileTestnet) {
           toast.error("Please switch to the Nile Testnet in TronLink.");
           return;
@@ -140,8 +157,7 @@ export const AppProvider = ({ children }: any) => {
         // Optionally trigger connection
         await window.tronLink.request({ method: "tron_requestAccounts" });
         if (window.tronWeb.ready) {
-          const isOnNileTestnet =
-            window.tronWeb.fullNode.host === "https://api.nileex.io";
+          const isOnNileTestnet = window.tronWeb.fullNode.host === network;
           if (!isOnNileTestnet) {
             toast.error("Please switch to the Nile Testnet in TronLink.");
             return;
@@ -231,6 +247,8 @@ export const AppProvider = ({ children }: any) => {
         walletAddress,
         setWalletAddress,
         connectWallet,
+        coinToRaiseIn,
+        setCoinToRaiseIn,
       }}
     >
       {children}

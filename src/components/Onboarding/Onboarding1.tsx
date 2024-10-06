@@ -94,7 +94,8 @@ const tagVal = [
 ];
 
 function Step1() {
-  const { setStep, tags, setTags } = React.useContext(AppContext);
+  const { setStep, tags, setTags, coinToRaiseIn, setCoinToRaiseIn } =
+    React.useContext(AppContext);
   // console.log(tags);
 
   const handleClick = () => {
@@ -113,10 +114,24 @@ function Step1() {
       </Box>
       {/* pick funding type */}
       <Flex pt={4}>
-        <Select size="lg" variant="outline" placeholder="TRX">
+        <Select
+          size="lg"
+          value={coinToRaiseIn}
+          onChange={(e) => {
+            const val = {
+              id: e.target.value,
+              name: e.target.selectedOptions[0].text,
+            };
+            setCoinToRaiseIn(val);
+            console.log(val);
+          }}
+          variant="outline"
+          placeholder="TRX"
+        >
           {/* <option value="Zeta">Zeta</option> */}
-          <option value="BNB">USDC</option>
-          <option value="BTC">JPT</option>
+          <option value="USDT">tether</option>
+          <option value="BTT">BitTorrent</option>
+          <option value="SUN">SUN Token</option>
         </Select>
         {/* <Input value={publicKey?.toString()} isReadOnly size="lg" /> */}
       </Flex>
