@@ -80,7 +80,7 @@ type SupportedCoins =
   | { id: "TRX"; name: "tron" }
   | { id: "USDT"; name: "tether" }
   | { id: "BTT"; name: "BitTorrent" }
-  | { id: "SUN"; name: "SUN TOken" };
+  | { id: "SUN"; name: "SUN" };
 
 export const AppProvider = ({ children }: any) => {
   const [step, setStep] = React.useState<number>(1);

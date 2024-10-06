@@ -131,7 +131,7 @@ function Step1() {
           {/* <option value="Zeta">Zeta</option> */}
           <option value="USDT">tether</option>
           <option value="BTT">BitTorrent</option>
-          <option value="SUN">SUN Token</option>
+          <option value="SUN">SUN</option>
         </Select>
         {/* <Input value={publicKey?.toString()} isReadOnly size="lg" /> */}
       </Flex>
