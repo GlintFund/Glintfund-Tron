@@ -81,7 +81,7 @@ function OptionModal({ onToggle, isOpen }) {
               borderRadius="full"
               fontSize="sm"
               fontWeight="medium"
-              onClick={() => navigate("/campaigns")}
+              onClick={() => navigate("/campaign")}
             >
               💡 Explore Other Features
             </Button>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-
-import Aos from 'aos';
-import 'aos/dist/aos.css'
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 import LandingPage from "./pages/LandingPage";
 import Profile from "./pages/Profile";
@@ -13,15 +12,15 @@ import Details from "./components/Campaign/Details";
 import MessagePage from "./pages/Message";
 import ConnectWallet from "./components/LandingPage/ConnectWallet";
 import Loading from "./pages/Loading";
-import Lending from "./pages/Lending";
+import Exchange from "./pages/Lending";
 
 const App = () => {
-  useEffect(()=> {
+  useEffect(() => {
     Aos.init({
       duration: 2500,
       delay: 400,
     });
-  },[]);
+  }, []);
 
   return (
     <React.Fragment>
@@ -34,7 +33,7 @@ const App = () => {
         <Route path="campaign" element={<Campaign />} />
         <Route path="details/:id" element={<Details />} />
         <Route path="message" element={<MessagePage />} />
-        <Route path="lending" element={<Lending/>} />
+        <Route path="exchange" element={<Exchange />} />
       </Routes>
     </React.Fragment>
   );

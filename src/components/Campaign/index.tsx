@@ -33,8 +33,8 @@
 //         h="100vh"
 //         overflowY={"scroll"}
 //         css={{
-  //           "&::-webkit-scrollbar": {
-    //             display: "none", // Hide scrollbar for Chrome, Safari, and Opera
+//           "&::-webkit-scrollbar": {
+//             display: "none", // Hide scrollbar for Chrome, Safari, and Opera
 //           },
 //           scrollbarWidth: "none",
 //           msOverflowStyle: "none",
@@ -109,8 +109,8 @@
 //   const random = Math.floor(Math.random() * pics.length);
 
 //   return (
-  //     <Center>
-  //       <Box
+//     <Center>
+//       <Box
 //         p="5"
 //         maxW="301px"
 //         borderRadius="md"
@@ -120,9 +120,9 @@
 //         transform="auto"
 //         _hover={{ transform: `scale(1.09)`, transition: "transform 0.3s ease" }}
 //         _active={{
-  //           transform: `scale(1.09)`,
-  //           transition: "transform 0.3s ease",
-  //         }}
+//           transform: `scale(1.09)`,
+//           transition: "transform 0.3s ease",
+//         }}
 //       >
 //         <Image
 //           w="271px"
@@ -161,30 +161,32 @@
 // }
 
 // / Dummy dashboard component with content
-import React from "react"
-import {SidebarDemo} from "../Sidebar"
+import React from "react";
+import { SidebarDemo } from "../Sidebar";
 import { HoverEffect } from "../../animations/card-hover-effect";
 import { CardBody, CardContainer, CardItem } from "../../animations/3d-card";
 import { Input } from "@chakra-ui/react";
 import { CiFilter } from "react-icons/ci";
+import FilterComponent from "./Filter";
 
 const Campaign = () => {
+  const [onFilterChange, setOnFilterChange] = React.useState("")
   return (
     <SidebarDemo>
-       <div className="bg-customPurple mx-auto px-8">
-      <div className="flex pt-3 justify-between items-center  mx-auto ">
-        <h2 className="font-extrabold">Campaigns</h2>
-        <Input maxW={"40%"} placeholder="search for campaign"/>
-        <CiFilter/>
+      <div className="bg-customPurple mx-auto px-8">
+        <div className="flex pt-3 justify-between items-center  mx-auto ">
+          <h2 className="font-extrabold">Campaigns</h2>
+          <Input maxW={"40%"} placeholder="search for campaign" />
+          {/* <CiFilter/> */}
+          <FilterComponent onFilterChange={setOnFilterChange} />
         </div>
-      <HoverEffect items={projects} />
-    </div>
+        <HoverEffect items={projects} />
+      </div>
     </SidebarDemo>
   );
 };
 
-export default Campaign
-
+export default Campaign;
 
 export const projects = [
   {
@@ -192,47 +194,47 @@ export const projects = [
     description:
       "A technology company that builds economic infrastructure for the internet.",
     link: "https://stripe.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:20
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 20,
   },
   {
     title: "Netflix",
     description:
       "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
     link: "https://netflix.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:30
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 30,
   },
   {
     title: "Google",
     description:
       "A multinational technology company that specializes in Internet-related services and products.",
     link: "https://google.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:0
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 0,
   },
   {
     title: "Meta",
     description:
       "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
     link: "https://meta.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:78
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 78,
   },
   {
     title: "Amazon",
     description:
       "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
     link: "https://amazon.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:49
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 49,
   },
   {
     title: "Microsoft",
     description:
       "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
     link: "https://microsoft.com",
-    src:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    progress:90
+    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    progress: 90,
   },
 ];
