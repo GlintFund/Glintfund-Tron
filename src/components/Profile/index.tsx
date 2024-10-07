@@ -8,18 +8,21 @@ import {
   Button,
   Image,
   VStack,
-  Show,
+  HStack,
   Progress,
-  Hide,
   keyframes,
+  useClipboard,
+  Heading,
+  Show,
+  Hide,
 } from "@chakra-ui/react";
 import { AppContext } from "../../Context";
 import { useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { CopyIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { useWriteContract } from "wagmi";
+import QRCode from "qrcode";
 import contractAbi from "../../contract/CrowdFunding-abi.json";
 import toast from "react-hot-toast";
 import MobileNavBar from "../Navbar/MobileNavbar";
@@ -36,6 +39,7 @@ import { useAccount } from "wagmi";
 import { useAppSelector } from "../../redux/hook";
 import { contractAddress } from "../../hooks";
 import { SidebarDemo } from "../Sidebar";
+import { DownloadIcon, CopyIcon } from "@chakra-ui/icons";
 
 const AnimatedCopyIcon = motion(CopyIcon);
 
@@ -54,8 +58,9 @@ function Index() {
   const { data: dd } = useGetAllCampaigns();
   const { address } = useAccount();
   const data = useAppSelector((state) => state.campaign);
-  const fullUrl = window.location.origin + "/details/" + data.id;
 
+  const donationLink = window.location.origin + "/details/" + data.id;
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [converstion, setConverstion] = React.useState(0);
@@ -67,6 +72,7 @@ function Index() {
   };
 
   const bounceAnimation = `${bounce} 3s ease-in-out infinite`;
+  const { hasCopied, onCopy } = useClipboard(donationLink);
 
   const handleClaim = async () => {
     // try {
@@ -107,7 +113,26 @@ function Index() {
     };
 
     getCamp();
+    generateQR();
   }, []);
+  // With async/await
+  const generateQR = async () => {
+    try {
+      const url = await QRCode.toDataURL(donationLink);
+      setQrCodeUrl(url);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDownloadQR = () => {
+    const link = document.createElement("a");
+    link.href = qrCodeUrl;
+    link.setAttribute("download", "Qr Code"); // Set the download attribute with the desired file name
+    document.body.appendChild(link);
+    link.click();
+    link.remove(); // Clean up after the download is triggered
+  };
 
   return (
     <SidebarDemo>
@@ -154,13 +179,12 @@ function Index() {
       </Text>
       {data && (
         <Box
-          color="black"
+          color="white"
           py={3}
           mx={8}
           px={8}
           borderRadius={"15px"}
-          h={170}
-          bgColor="white"
+          bgColor="transparent"
           gap={6}
           transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
           _hover={{
@@ -192,28 +216,78 @@ function Index() {
               (Number(data.amountDonated) / Number(data.amountRequired)) * 100
             )}
           />
-          <CopyToClipboard text={fullUrl}>
-            <Flex mt={3} animation={bounceAnimation}>
-              Copy your Donation Link{" "}
-              <AnimatedCopyIcon
-                style={{ color: "#7F7F7F" }}
-                boxSize={6}
-                variants={variants}
-                initial="normal"
-                animate={
-                  isClicked ? "clicked" : isHovered ? "hovered" : "normal"
-                }
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() => setIsClicked(!isClicked)}
-              />
+          {/* Donation Link */}
+          <Box
+            bg="primary.50"
+            borderRadius="lg"
+            p={8}
+            boxShadow="lg"
+            mx="auto"
+            mt={3}
+            textAlign="center"
+          >
+            <Heading as="h2" size="lg" mb={6}>
+              Share Your Donation
+            </Heading>
+            <Text fontSize="lg" mb={4}>
+              You can share your donation with others using the link or QR code
+              below.
+            </Text>
+
+            <Flex flexDirection={{ base: "column", md: "row" }} gap={8} mb={8}>
+              {/* QR Code Section */}
+              <Box>
+                <Image
+                  src={qrCodeUrl}
+                  alt="Donation QR Code"
+                  borderRadius="md"
+                  mb={4}
+                  boxSize="200px"
+                  mx="auto"
+                />
+                <Button
+                  leftIcon={<DownloadIcon />}
+                  colorScheme="purple"
+                  onClick={handleDownloadQR}
+                >
+                  Download QR Code
+                </Button>
+              </Box>
+
+              {/* Donation Link Section */}
+              <Flex
+                align="center"
+                justifyContent="center"
+                borderRadius="md"
+                // w="full"
+                bg="gray.100"
+                h={16}
+                p={3}
+              >
+                <Input
+                  value={donationLink}
+                  isReadOnly
+                  variant="unstyled"
+                  fontWeight="bold"
+                  color="purple.600"
+                />
+                <Button
+                  onClick={onCopy}
+                  ml={2}
+                  px={6}
+                  colorScheme="purple"
+                  leftIcon={<CopyIcon />}
+                >
+                  {hasCopied ? "Copied" : "Copy Link"}
+                </Button>
+              </Flex>
             </Flex>
-          </CopyToClipboard>
+          </Box>
         </Box>
       )}
       <Button
         onClick={handleClaim}
-        my={3}
+        my={6}
         color="white"
         bgColor="purple"
         mx={8}
@@ -222,11 +296,6 @@ function Index() {
       >
         Claim Donation
       </Button>
-      {/*    <Show below="md">
-      <Flex mt="50%" maxW="100%">
-      <MobileNavBar/>
-      </Flex>
-      </Show> */}
     </SidebarDemo>
   );
 }

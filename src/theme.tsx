@@ -13,6 +13,9 @@ const theme = extendTheme({
       100: "#FCE7F3",
       200: "#FBCFE8",
     },
+    background: {
+      100: "linear-gradient(to bottom right, #0A0315, #2C014D)",
+    },
   },
   styles: {
     global: {
