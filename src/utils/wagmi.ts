@@ -1,7 +1,7 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 // import { WagmiProvider } from 'wagmi';
-import { zetachainAthensTestnet, zetachain  } from "wagmi/chains";
+import { zetachainAthensTestnet, zetachain } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export const config = getDefaultConfig({
