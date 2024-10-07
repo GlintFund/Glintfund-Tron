@@ -9,12 +9,14 @@ export type RecipientT = {
 
 export type CampaignT = {
   address: string;
-  name: string;
+  title: string;
   amountDonated: number;
   amountRequired: number;
   description: string;
   donationComplete: boolean;
   id: number;
+  endTime: number;
+  donationType: string;
 };
 
 export type TransactionT = {

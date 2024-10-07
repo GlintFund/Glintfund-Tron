@@ -168,9 +168,22 @@ import { CardBody, CardContainer, CardItem } from "../../animations/3d-card";
 import { Input } from "@chakra-ui/react";
 import { CiFilter } from "react-icons/ci";
 import FilterComponent from "./Filter";
+import { useGetAllCampaigns } from "../functions";
+import { useAppSelector } from "../../redux/hook";
 
 const Campaign = () => {
-  const [onFilterChange, setOnFilterChange] = React.useState("")
+  const [onFilterChange, setOnFilterChange] = React.useState("");
+  const { getAllCampaigns } = useGetAllCampaigns();
+  const campaigns = useAppSelector((state) => state.campaign);
+
+  console.log(campaigns);
+
+  React.useEffect(() => {
+    if (campaigns.length < 1) {
+      getAllCampaigns();
+    }
+  }, []);
+
   return (
     <SidebarDemo>
       <div className="bg-customPurple mx-auto px-8">
@@ -180,7 +193,7 @@ const Campaign = () => {
           {/* <CiFilter/> */}
           <FilterComponent onFilterChange={setOnFilterChange} />
         </div>
-        <HoverEffect items={projects} />
+        <HoverEffect items={campaigns} />
       </div>
     </SidebarDemo>
   );

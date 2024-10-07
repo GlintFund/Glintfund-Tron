@@ -15,8 +15,8 @@ import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
-// const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
-const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
+const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+// const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
 
 type bioT = {
   name: string;
@@ -73,8 +73,8 @@ export const AppContext = React.createContext<{
   setCoinToRaiseIn: undefined,
 });
 
-const network = "https://api.shasta.trongrid.io";
-// const network = "https://nile.trongrid.io"
+// const network = "https://api.shasta.trongrid.io";
+const network = "https://api.nileex.io";
 
 type SupportedCoins =
   | { id: "TRX"; name: "tron" }
@@ -131,7 +131,17 @@ export const AppProvider = ({ children }: any) => {
     console.log(bio, tags, amount, address);
   };
 
-  const getAllCampaigns = async () => {};
+  const getAllCampaigns = async () => {
+    // const contract = await getSmartContract();
+    // let i;
+    // const campaigns = []
+    // for (i = 1, i<= 10;) {
+    //  const data =  await contract.campaigns(BigInt(i)).call();
+    //  campaigns.push(data);
+    //  i++;
+    // }
+    // return contract
+  };
 
   const getACampaign = async (pub: string) => {};
 

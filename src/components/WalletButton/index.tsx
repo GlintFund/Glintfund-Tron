@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import { useAppSelector, useAppDispatch } from "../../redux/hook";
 import { addData } from "../../redux/slice/TronDataSlice";
 
-const network = "https://api.shasta.trongrid.io";
+// const network = "https://api.shasta.trongrid.io";
+const network = "https://api.nileex.io";
 
 const WalletButton = () => {
   const [isWrongNetwork, setIsWrongNetwork] = useState(false);
@@ -11,18 +12,14 @@ const WalletButton = () => {
   const wallet = useAppSelector((state) => state.tronData);
   const dispatch = useAppDispatch();
 
+  // Check for existing wallet connection on load
   useEffect(() => {
-    // Check if the wallet is already connected and get its address
-    const checkWalletConnection = async () => {
-      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        dispatch(
-          addData({ walletAddress: window.tronWeb.defaultAddress.base58 })
-        );
-        checkNetwork();
-      }
-    };
-    checkWalletConnection();
-  }, []);
+    const savedWalletAddress = localStorage.getItem("walletAddress");
+    if (savedWalletAddress) {
+      dispatch(addData({ walletAddress: savedWalletAddress }));
+      checkNetwork();
+    }
+  }, [dispatch]);
 
   window.addEventListener("message", (event) => {
     if (
@@ -31,7 +28,7 @@ const WalletButton = () => {
       event.data.message.action === "setNode"
     ) {
       const newNetwork = event.data.message.data.node;
-      if (newNetwork.fullNode === network) {
+      if (newNetwork.fullNode.host === network) {
         setIsWrongNetwork(false);
       } else {
         setIsWrongNetwork(true);
@@ -46,17 +43,16 @@ const WalletButton = () => {
         if (window.tronWeb.ready) {
           const address = window.tronWeb.defaultAddress.base58;
           dispatch(addData({ walletAddress: address }));
+          localStorage.setItem("walletAddress", address); // Save to localStorage
           checkNetwork();
         } else {
           await window.tronLink.request({ method: "tron_requestAccounts" });
           const address = window.tronWeb.defaultAddress.base58;
           dispatch(addData({ walletAddress: address }));
-
+          localStorage.setItem("walletAddress", address); // Save to localStorage
           checkNetwork();
         }
       }
-      // Request account from TronLink
-      await window.tronLink.request({ method: "tron_requestAccounts" });
     } catch (error) {
       console.error("Error connecting wallet:", error);
       toast.error("Please install TronLink to interact with this dApp.");
@@ -64,18 +60,18 @@ const WalletButton = () => {
   };
 
   const checkNetwork = () => {
-    // Check if TronLink is on the Nile Testnet (network ID for Nile is 2)
-    if (window.tronWeb.fullNode.host.includes("shasta")) {
+    console.log(window.tronWeb.fullNode.host);
+    if (window.tronWeb.fullNode.host === network) {
       setIsWrongNetwork(false);
     } else {
       toast.error("Please switch to the Nile Testnet in TronLink.");
-
       setIsWrongNetwork(true);
     }
   };
 
   const disconnectWallet = () => {
     dispatch(addData({ walletAddress: null }));
+    localStorage.removeItem("walletAddress"); // Remove from localStorage
     setIsWrongNetwork(false);
   };
 

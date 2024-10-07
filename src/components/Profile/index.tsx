@@ -65,13 +65,7 @@ function Index() {
   const [isClicked, setIsClicked] = useState(false);
   const [converstion, setConverstion] = React.useState(0);
   const { writeContractAsync } = useWriteContract();
-  const variants = {
-    normal: { scale: 1, color: "#7F7F7F" },
-    hovered: { scale: 1.2 },
-    clicked: { rotate: 360, scale: 1.2, color: "#341A41" },
-  };
 
-  const bounceAnimation = `${bounce} 3s ease-in-out infinite`;
   const { hasCopied, onCopy } = useClipboard(donationLink);
 
   const handleClaim = async () => {
@@ -106,10 +100,10 @@ function Index() {
   React.useEffect(() => {
     const getCamp = async () => {
       const smartContract = await getSmartContract();
-      const data = await smartContract.getAllCampaigns().call();
-      const data_ = await smartContract.campaignCounter().call();
-      console.log("campaigns", data);
-      console.log("campaignCount", data_);
+      const data_ = await smartContract.getAllCampaigns().call();
+      const data = await smartContract.campaigns(BigInt(1)).call();
+      console.log("campaigns", data_);
+      console.log("getallcamp", data);
     };
 
     getCamp();

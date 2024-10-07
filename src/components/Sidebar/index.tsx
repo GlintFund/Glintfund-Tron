@@ -10,7 +10,7 @@ import { Link, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { cn } from "../..//lib/utils";
 import Logo from "../Logo";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import WalletButton from "../WalletButton";
 
 export function SidebarDemo({ children }) {
   const links = [
@@ -61,15 +61,9 @@ export function SidebarDemo({ children }) {
               ))}
             </div>
           </div>
-          {/* <div>
-          <ConnectButton
-            chainStatus="none"
-            accountStatus={{
-              smallScreen: "avatar",
-              largeScreen: "avatar",
-            }}
-          />
-          </div> */}
+          <div>
+            <WalletButton />
+          </div>
         </SidebarBody>
       </Sidebar>
       <div className="overflow-y-scroll w-full h-screen bg-customPurple">

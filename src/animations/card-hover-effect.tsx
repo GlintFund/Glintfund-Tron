@@ -1,20 +1,15 @@
 import { cn } from "../lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import {Image, Link, Progress, Tag} from "@chakra-ui/react";
+import { Image, Link, Progress, Tag } from "@chakra-ui/react";
 import { useState } from "react";
 import { CardContainer, CardItem } from "./3d-card";
+import { CampaignT } from "../redux/types";
 
 export const HoverEffect = ({
   items,
   className,
 }: {
-  items: {
-    title: string;
-    description: string;
-    link: string;
-    src:string
-    progress:number
-  }[];
+  items: CampaignT[];
   className?: string;
 }) => {
   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -28,8 +23,8 @@ export const HoverEffect = ({
     >
       {items.map((item, idx) => (
         <Link
-          href={item?.link}
-          key={item?.link}
+          href={`/details/${item.id}`}
+          key={item?.id}
           className="relative group  block p-2 h-full w-full"
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
@@ -54,23 +49,28 @@ export const HoverEffect = ({
           <Card>
             <CardTitle>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
-          <CardContainer className="inter-var">
-            <ImageSection src={item.src}/>
-          </CardContainer>
-          <Progress size="sm" borderRadius="md" value={item.progress} />
-          <p className="py-3">$300 raised</p>
-          <div className="flex-1 gap-y-3">
-            <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">
-                supported Tokens
-                </p>
-                <div className="flex-1 gap-x-5">
-
+            <CardContainer className="inter-var">
+              <ImageSection
+                src={
+                  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
+              />
+            </CardContainer>
+            <Progress
+              size="sm"
+              borderRadius="md"
+              value={(item.amountDonated / item.amountRequired) * 100}
+            />
+            <p className="py-3">${item.amountDonated} raised</p>
+            <div className="flex-1 gap-y-3">
+              <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">
+                Supported Tokens
+              </p>
+              <div className="flex-1 gap-x-5">
                 <Tag>BNB</Tag> <Tag>SUN</Tag> <Tag>JPX</Tag>
-                </div> 
-                </div>
-
+              </div>
+            </div>
           </Card>
-
         </Link>
       ))}
     </div>
@@ -129,16 +129,22 @@ export const CardDescription = ({
   );
 };
 
-export const ImageSection = ({className, src}: {className?: string; src:string}) => {
-    return (
-        <CardItem translateZ="100" className="w-full mt-1">
-          <Image
-            src={src}
-            height="40"
-            width="1000"
-            className="h-[40px] w-full object-cover rounded-xl group-hover/card:shadow-xl"
-            alt="thumbnail"
-          />
-        </CardItem>
-    )
-}
+export const ImageSection = ({
+  className,
+  src,
+}: {
+  className?: string;
+  src: string;
+}) => {
+  return (
+    <CardItem translateZ="100" className="w-full mt-1">
+      <Image
+        src={src}
+        height="40"
+        width="1000"
+        className="h-[40px] w-full object-cover rounded-xl group-hover/card:shadow-xl"
+        alt="thumbnail"
+      />
+    </CardItem>
+  );
+};
