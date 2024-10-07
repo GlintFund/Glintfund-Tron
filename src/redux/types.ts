@@ -30,5 +30,5 @@ export type PriceT = {
 };
 
 export type TronDataSliceT = {
-  walletAddress: string
-}
+  walletAddress: string | null;
+};

@@ -4,7 +4,7 @@ import { TronDataSliceT } from "../types";
 
 // Define the initial state using that type
 const initialState: TronDataSliceT = {
-  walletAddress: ""
+  walletAddress: null,
 };
 
 export const TronDataSlice = createSlice({
@@ -12,7 +12,7 @@ export const TronDataSlice = createSlice({
   initialState,
   reducers: {
     addData: (state, { payload }: PayloadAction<TronDataSliceT>) => {
-      state.walletAddress = payload.walletAddress
+      state.walletAddress = payload.walletAddress;
     },
     clearData: () => {
       return initialState;

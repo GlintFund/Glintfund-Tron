@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useAppSelector, useAppDispatch } from "../../redux/hook";
+import { addData } from "../../redux/slice/TronDataSlice";
 
 const network = "https://api.shasta.trongrid.io";
 
 const WalletButton = () => {
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isWrongNetwork, setIsWrongNetwork] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const wallet = useAppSelector((state) => state.tronData);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // Check if the wallet is already connected and get its address
     const checkWalletConnection = async () => {
       if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-        setWalletAddress(window.tronWeb.defaultAddress.base58);
+        dispatch(
+          addData({ walletAddress: window.tronWeb.defaultAddress.base58 })
+        );
         checkNetwork();
       }
     };
@@ -40,12 +45,13 @@ const WalletButton = () => {
       if (typeof window.tronWeb !== "undefined") {
         if (window.tronWeb.ready) {
           const address = window.tronWeb.defaultAddress.base58;
-          setWalletAddress(address);
+          dispatch(addData({ walletAddress: address }));
           checkNetwork();
         } else {
           await window.tronLink.request({ method: "tron_requestAccounts" });
           const address = window.tronWeb.defaultAddress.base58;
-          setWalletAddress(address);
+          dispatch(addData({ walletAddress: address }));
+
           checkNetwork();
         }
       }
@@ -69,14 +75,14 @@ const WalletButton = () => {
   };
 
   const disconnectWallet = () => {
-    setWalletAddress(null);
+    dispatch(addData({ walletAddress: null }));
     setIsWrongNetwork(false);
   };
 
   const copyAddress = () => {
-    if (walletAddress) {
-      navigator.clipboard.writeText(walletAddress);
-      alert("Wallet address copied!");
+    if (wallet.walletAddress) {
+      navigator.clipboard.writeText(wallet.walletAddress);
+      toast.success("Wallet address copied!");
     }
   };
 
@@ -86,7 +92,7 @@ const WalletButton = () => {
 
   return (
     <div className="relative">
-      {!walletAddress ? (
+      {!wallet.walletAddress ? (
         // Connect Wallet button
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
@@ -104,12 +110,14 @@ const WalletButton = () => {
         >
           {isWrongNetwork
             ? "Wrong Network"
-            : walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4)}
+            : wallet.walletAddress.slice(0, 6) +
+              "..." +
+              wallet.walletAddress.slice(-4)}
         </button>
       )}
 
       {/* Popup for Disconnect or Copy Address */}
-      {showPopup && walletAddress && (
+      {showPopup && wallet.walletAddress && (
         <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border border-gray-300 rounded-md">
           <button
             className="block w-full text-left text-black px-4 py-2 hover:bg-gray-200"

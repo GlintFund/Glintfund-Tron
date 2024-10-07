@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Box,
   Text,
@@ -7,6 +7,7 @@ import {
   Center,
   Button,
   Image,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../Context";
@@ -18,13 +19,19 @@ import { BackgroundBeams } from "../../animations/background-beams";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { BackgroundLines } from "../../animations/background-lines";
 import WalletButton from "../WalletButton";
+import OptionModal from "./Modal";
+import { useAppSelector } from "../../redux/hook";
 
 function ConnectWallet() {
   const navigate = useNavigate();
-  const account = useAccount();
-  console.log(account);
-  const { connectWallet, getSmartContract, walletAddress } =
-    useContext(AppContext);
+  const wallet = useAppSelector((state) => state.tronData);
+
+  const { isOpen, onToggle } = useDisclosure();
+
+  useEffect(() => {
+    // TODO: also check if the wallet address has been linked before: i.e user exists
+    onToggle();
+  }, [wallet.walletAddress]);
 
   return (
     <BackgroundLines className="flex  bg-custom-gradient  w-full flex-col px-4">
@@ -45,6 +52,7 @@ function ConnectWallet() {
             </Flex>
           </Center>
         </Container>
+        <OptionModal onToggle={onToggle} isOpen={isOpen} />
 
         <Footer />
       </div>
