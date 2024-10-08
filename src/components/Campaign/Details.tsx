@@ -90,11 +90,11 @@ function Details() {
   const handleDonate = async () => {
     try {
       setDonateLoading(true);
-      await approveSpending(
-        "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9",
-        contractAddress_,
-        value
-      );
+      // await approveSpending(
+      //   "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9",
+      //   contractAddress_,
+      //   value
+      // );
       const contract = await getSmartContract();
       var theId = +id;
       const donate = await contract

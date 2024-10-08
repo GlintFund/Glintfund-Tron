@@ -99,7 +99,7 @@ function Index() {
 
   React.useEffect(() => {
     const call = async () => {
-      await getAllCampaigns();
+      await getAllCampaigns(getSmartContract);
     };
     call();
   }, []);

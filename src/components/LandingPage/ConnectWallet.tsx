@@ -20,33 +20,17 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { BackgroundLines } from "../../animations/background-lines";
 import WalletButton from "../WalletButton";
 import OptionModal from "./Modal";
-import { useAppSelector } from "../../redux/hook";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { CampaignT } from "../../redux/types";
 import { useGetAllCampaigns } from "../functions";
 
 function ConnectWallet() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const wallet = useAppSelector((state) => state.tronData);
   const campaigns = useAppSelector((state) => state.campaign);
-  const { getAllCampaigns, loading: isLoading_ } = useGetAllCampaigns();
-
-  const { isOpen, onToggle } = useDisclosure();
-
-  useEffect(() => {
-    if (wallet.walletAddress != null) {
-      getAllCampaigns();
-      // TODO: also check if the wallet address has been linked before: i.e user exists
-      const userExist = campaigns?.filter(
-        (campaign: CampaignT) => campaign.address === wallet.walletAddress
-      );
-
-      if (userExist.length > 0) {
-        navigate("/campaign");
-      } else {
-        onToggle();
-      }
-    }
-  }, [wallet.walletAddress]);
+  const { getSmartContract, onToggle, isOpen } = useContext(AppContext);
+  const { getAllCampaigns } = useGetAllCampaigns();
 
   return (
     <BackgroundLines className="flex  bg-custom-gradient  w-full flex-col px-4">

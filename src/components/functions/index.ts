@@ -7,18 +7,17 @@ import { CampaignT } from "../../redux/types";
 
 export const useGetAllCampaigns = () => {
   const [loading, setLoading] = useState(false);
-  const { getSmartContract } = useContext(AppContext);
   const dispatch = useAppDispatch();
 
-  const getAllCampaigns = async () => {
+  const getAllCampaigns = async (getSmartContract) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const contract = await getSmartContract();
-      const totalCamp = await contract?.campaignCounter().call();
+      const totalCamp = await contract.campaignCounter().call();
+
       for (let i = 1; i <= totalCamp.toNumber(); i++) {
-        const data = await contract?.campaigns(BigInt(i)).call();
-        console.log(data);
-        var param = {
+        const data = await contract.campaigns(BigInt(i)).call();
+        const param = {
           address: window.tronWeb.address.fromHex(data.admin),
           title: data.title,
           amountDonated: data.amount_donated.toNumber(),
@@ -31,11 +30,10 @@ export const useGetAllCampaigns = () => {
         };
         dispatch(addCampaign(param));
       }
-      setLoading(false);
     } catch (err) {
-      //   toast.error("something went wrong");
+      console.error("Error fetching campaigns:", err);
+    } finally {
       setLoading(false);
-      console.log(err);
     }
   };
 

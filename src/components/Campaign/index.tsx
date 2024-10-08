@@ -170,11 +170,13 @@ import { CiFilter } from "react-icons/ci";
 import FilterComponent from "./Filter";
 import { useGetAllCampaigns } from "../functions";
 import { useAppSelector } from "../../redux/hook";
+import { AppContext } from "../../Context";
 
 const Campaign = () => {
   const [onFilterChange, setOnFilterChange] = React.useState("All");
   const { getAllCampaigns } = useGetAllCampaigns();
   const campaigns = useAppSelector((state) => state.campaign);
+  const { getSmartContract } = React.useContext(AppContext);
 
   console.log(campaigns);
 
@@ -185,7 +187,7 @@ const Campaign = () => {
 
   React.useEffect(() => {
     if (campaigns.length < 1) {
-      getAllCampaigns();
+      getAllCampaigns(getSmartContract);
     }
   }, []);
 
