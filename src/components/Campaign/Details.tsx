@@ -30,7 +30,8 @@ import { parseEther } from "viem";
 import { getTokenConversion } from "../../utils/tokenPrice";
 import { SidebarDemo } from "../Sidebar";
 import { addCampaignInView } from "../../redux/slice/CampInViewSlice";
-import { AppContext } from "../../Context";
+import { AppContext, contractAddress_ } from "../../Context";
+import { useApproveSpending } from "../functions";
 
 function Details() {
   const { id } = useParams();
@@ -38,8 +39,8 @@ function Details() {
   const [value, setValue] = useState<number>(0);
   const [dollarVal, setDollarVal] = useState(0);
   const [eqSendingDollar, seteqSendingDollar] = useState(0);
-  const format = (val: number) => `Z${val}`;
-  const parse = (val: string) => val.replace(/^\Z/, "");
+  const format = (val: number) => `T${val}`;
+  const parse = (val: string) => val.replace(/^\T/, "");
   const [loading, setLoading] = useState<boolean>(false);
   const [donateLoading, setDonateLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -47,6 +48,8 @@ function Details() {
     (state) => state.CampaignInViewSlice
   );
   const { getSmartContract } = useContext(AppContext);
+  const { approveSpending, loading: approveSpendLoading } =
+    useApproveSpending();
 
   const convert = async () => {
     const val = await getTokenConversion(details?.amountRequired);
@@ -87,6 +90,11 @@ function Details() {
   const handleDonate = async () => {
     try {
       setDonateLoading(true);
+      await approveSpending(
+        "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9",
+        contractAddress_,
+        value
+      );
       const contract = await getSmartContract();
       var theId = +id;
       const donate = await contract
@@ -94,7 +102,7 @@ function Details() {
         .send({
           callValue: window?.tronWeb.toSun(value),
           from: window.tronWeb.defaultAddress.base58,
-          shouldPollResponse: false, // Optional: wait for confirmation
+          shouldPollResponse: false,
         });
       console.log(donate);
       if (donate) {

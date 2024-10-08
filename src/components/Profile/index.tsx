@@ -59,25 +59,32 @@ function Index() {
   const address = useAppSelector((state) => state.tronData.walletAddress);
   const data = campaigns?.filter((camp) => camp.address === address);
   const donationLink = window.location.origin + "/details/" + data[0].id;
-
+  const [isLoading, setIsLoading] = useState(false);
   const { hasCopied, onCopy } = useClipboard(donationLink);
   const { getSmartContract } = useContext(AppContext);
 
   const handleClaim = async () => {
-    // try {
-    //   const hash = await writeContractAsync({
-    //     abi: contractAbi.abi,
-    //     address: contractAddress,
-    //     functionName: "claim",
-    //     args: [data.id],
-    //   });
-    //   console.log(hash);
-    //   toast.success("claim Successful");
-    // } catch (err: any) {
-    //   toast.error(err.message);
-    //   console.log("[Error message from handleClaim -]", err.message);
-    //   return;
-    // }
+    try {
+      setIsLoading(true);
+      const contract = await getSmartContract();
+      const value = await contract
+        ?.finalizeCampaign(BigInt(data[0].id), "skjsjsj")
+        .send({
+          from: window.tronWeb.defaultAddress.base58,
+          shouldPollResponse: false,
+        });
+
+      if (value) {
+        toast.success("claim Successful");
+        setIsLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+      setIsLoading(false);
+      console.log("[Error message from handleClaim -]", err.message);
+      return;
+    }
   };
 
   React.useEffect(() => {
@@ -279,6 +286,7 @@ function Index() {
         mx={8}
         px={8}
         isDisabled={!data[0].donationComplete}
+        isLoading={isLoading}
       >
         Claim Donation
       </Button>

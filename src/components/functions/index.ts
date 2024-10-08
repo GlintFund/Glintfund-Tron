@@ -66,3 +66,35 @@ export const useGetMyCampaigns = () => {
 
   return { getMyCampaigns, loading };
 };
+
+export const useApproveSpending = () => {
+  const [loading, setLoading] = useState(false);
+
+  const approveSpending = async (tokenAddress, contractAddress, amount) => {
+    try {
+      setLoading(true);
+      const getTokenContract = async (tokenAddress) => {
+        const tokenContract = await window.tronWeb.contract().at(tokenAddress);
+        return tokenContract;
+      };
+
+      // Get the TRC20 token contract
+      const tokenContract = await getTokenContract(tokenAddress);
+
+      // Approve the donation contract to spend tokens on behalf of the user
+      const result = await tokenContract
+        .approve(contractAddress, window.tronWeb.toSun(amount))
+        .send({
+          from: window.tronWeb.defaultAddress.base58,
+        });
+      setLoading(false);
+      console.log("Approval successful:", result);
+      return result;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error approving tokens:", error);
+      throw error;
+    }
+  };
+  return { approveSpending, loading };
+};
