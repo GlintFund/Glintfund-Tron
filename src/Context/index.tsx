@@ -10,13 +10,14 @@ import {
   clearTransactions,
 } from "../redux/slice/TransactionSlice";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { useGetAllCampaigns, contractAddress } from "../hooks/index";
 import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
 const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
 // const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
+import { useGetMyCampaigns, useGetAllCampaigns } from "../components/functions";
+import { CampaignT } from "../redux/types";
 
 type bioT = {
   name: string;
@@ -38,13 +39,8 @@ export const AppContext = React.createContext<{
   amount: number;
   setAmount: any;
   initUser: any;
-  getAllCampaigns: any;
   getACampaign: any;
   donate: any;
-  //tron
-  walletAddress: any;
-  setWalletAddress: any;
-  connectWallet: any;
   coinToRaiseIn: any;
   setCoinToRaiseIn: any;
 }>({
@@ -62,13 +58,8 @@ export const AppContext = React.createContext<{
   amount: 0,
   setAmount: undefined,
   initUser: undefined,
-  getAllCampaigns: undefined,
   getACampaign: undefined,
   donate: undefined,
-  //tron
-  walletAddress: "",
-  setWalletAddress: undefined,
-  connectWallet: undefined,
   coinToRaiseIn: undefined,
   setCoinToRaiseIn: undefined,
 });
@@ -100,7 +91,6 @@ export const AppProvider = ({ children }: any) => {
     description: "",
     donationComplete: false,
   });
-  const [walletAddress, setWalletAddress] = React.useState("");
   const [contract, setContract] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [coinToRaiseIn, setCoinToRaiseIn] = React.useState<SupportedCoins>({
@@ -113,17 +103,19 @@ export const AppProvider = ({ children }: any) => {
   // console.log("publickey type", publicKey);
   const dispatch = useAppDispatch();
   const recipient = useAppSelector((state) => state.recipient);
-
+  const { getMyCampaigns } = useGetMyCampaigns();
+  const { getAllCampaigns, loading: isLoading_ } = useGetAllCampaigns();
   const { address } = useAccount();
-  const { data: campaigns, isLoading: isLaoding_ } = useGetAllCampaigns();
-
+  const walletAddress = useAppSelector((state) => state.tronData.walletAddress);
+  const campaigns = useAppSelector((state) => state.campaign);
   const getUser = () => {};
 
   const getSmartContract = async () => {
     window.tronWeb.setFullNode(network);
-
-    if (window.tronWeb.ready) {
-      return await window.tronWeb.contract(abi.entrys, contractAddress_);
+    if (walletAddress) {
+      if (window.tronWeb.ready) {
+        return await window.tronWeb.contract(abi.entrys, contractAddress_);
+      }
     }
   };
 
@@ -131,108 +123,56 @@ export const AppProvider = ({ children }: any) => {
     console.log(bio, tags, amount, address);
   };
 
-  const getAllCampaigns = async () => {
-    // const contract = await getSmartContract();
-    // let i;
-    // const campaigns = []
-    // for (i = 1, i<= 10;) {
-    //  const data =  await contract.campaigns(BigInt(i)).call();
-    //  campaigns.push(data);
-    //  i++;
-    // }
-    // return contract
-  };
-
   const getACampaign = async (pub: string) => {};
 
   const donate = async (val: number) => {};
 
-  const getTransactions = async () => {};
+  React.useEffect(() => {
+    const call = async () => {
+      await getAllCampaigns();
+    };
+    call();
 
-  async function connectWallet() {
-    if (typeof window.tronWeb !== "undefined") {
-      if (window.tronWeb.ready) {
-        const isOnNileTestnet = window.tronWeb.fullNode.host === network;
-        if (!isOnNileTestnet) {
-          toast.error("Please switch to the Nile Testnet in TronLink.");
-          return;
-        }
-        console.log(
-          "TronLink is connected:",
-          window.tronWeb.defaultAddress.base58
-        );
-        setWalletAddress(window.tronWeb.defaultAddress.base58);
-      } else {
-        toast.error("TronLink is installed but not connected.");
-        // Optionally trigger connection
-        await window.tronLink.request({ method: "tron_requestAccounts" });
-        if (window.tronWeb.ready) {
-          const isOnNileTestnet = window.tronWeb.fullNode.host === network;
-          if (!isOnNileTestnet) {
-            toast.error("Please switch to the Nile Testnet in TronLink.");
-            return;
-          }
-
-          console.log("Connected:", window.tronWeb.defaultAddress.base58);
-          setWalletAddress(window.tronWeb.defaultAddress.base58);
-        }
-      }
-    } else {
-      console.log("TronLink is not installed.");
-      toast.error("Please install TronLink to interact with this dApp.");
+    const userExist = campaigns?.filter(
+      (campaign: CampaignT) => campaign.address === walletAddress
+    );
+    console.log(userExist, "UserExist");
+    // console.log(campaigns, "camp");
+    if (userExist === undefined) {
+      return;
     }
-  }
+    if (!walletAddress && location.pathname.includes("details/")) {
+      return;
+    } else if (!walletAddress) {
+      navigate("/");
+    } else if (userExist.length > 0) {
+      getMyCampaigns();
 
-  // React.useEffect(() => {
-  //   const userExist = campaigns?.filter(
-  //     (campaign: any) => campaign.admin === address
-  //   );
-  //   // console.log(userExist, "UserExist");
-  //   // console.log(campaigns, "camp");
-  //   if (userExist === undefined) {
-  //     return;
-  //   }
-  //   if (!address && location.pathname.includes("details/")) {
-  //     return;
-  //   } else if (!address) {
-  //     navigate("/");
-  //   } else if (userExist.length > 0) {
-  //     var user = {
-  //       address,
-  //       name: userExist[0].name,
-  //       amountRequired: Number(userExist[0].amount_required),
-  //       amountDonated: Number(userExist[0].amount_donated) / 10 ** 18,
-  //       description: userExist[0].description,
-  //       donationComplete: userExist[0].donation_complete,
-  //       id: userExist[0].id,
-  //     };
-  //     dispatch(addCampaign(user));
-  //     const previousPage = location.state?.from || "campaign";
-  //     console.log(previousPage);
-  //     navigate(previousPage);
-  //   } else if (userExist.length === 0) {
-  //     navigate("/");
-  //   }
-  // }, [address, isLaoding_]);
+      const previousPage = location.state?.from || "campaign";
+      navigate(previousPage);
+    } else if (userExist.length === 0) {
+      navigate("/");
+    }
+  }, [walletAddress, isLoading_]);
 
   // React.useEffect(() => {
   //   const connectWallet = async () => {
-  //     // const contract = await checkTronLink();
-  //     // setContract(contract);
-  //     setIsLoading(false);
+  //     if(walletAddress) {
+  //       await getAllCampaigns();
+  //       await getMyCampaigns();
+  //     }
+
+  //     if (myCampaigns.length > 0) {
+  //       const previousPage = location.state?.from || "campaign";
+  //       navigate(previousPage);
+  //     } else if (!walletAddress) {
+  //       navigate("/");
+  //     } else if (myCampaigns.length === 0) {
+  //       navigate("/onboarding");
+  //     }
   //   };
-  //   if (isLoading) {
-  //     navigate("/loading");
-  //   } else if (!contract) {
-  //     navigate("/connect-wallet");
-  //   } else {
-  //     //TODO: navigate to onboarding after i fetch the contratc and notice that
-  //     // this address doesn't exist with any account
-  //     //navigate to campagin if it does
-  //     navigate("/onboarding");
-  //   }
   //   connectWallet();
-  // }, []);
+  // }, [walletAddress]);
 
   return (
     <AppContext.Provider
@@ -251,12 +191,8 @@ export const AppProvider = ({ children }: any) => {
         amount,
         setAmount,
         initUser,
-        getAllCampaigns,
         getACampaign,
         donate,
-        walletAddress,
-        setWalletAddress,
-        connectWallet,
         coinToRaiseIn,
         setCoinToRaiseIn,
       }}
