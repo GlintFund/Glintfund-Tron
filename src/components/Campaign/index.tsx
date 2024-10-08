@@ -172,18 +172,40 @@ import { useGetAllCampaigns } from "../functions";
 import { useAppSelector } from "../../redux/hook";
 import { AppContext } from "../../Context";
 
+const pics = [
+  "pic-1.jpg",
+  "pic-2.jpg",
+  "pic-3.jpg",
+  "pic-4.jpg",
+  "pic-5.jpg",
+  "pic-6.jpg",
+  "pic-7.jpg",
+  "pic-8.jpg",
+  "pic-9.jpg",
+  "pic-10.jpg",
+  "coin.jpg",
+];
+
 const Campaign = () => {
   const [onFilterChange, setOnFilterChange] = React.useState("All");
   const { getAllCampaigns } = useGetAllCampaigns();
   const campaigns = useAppSelector((state) => state.campaign);
   const { getSmartContract } = React.useContext(AppContext);
 
-  console.log(campaigns);
+  const getRandomImage = () => {
+    return pics[Math.floor(Math.random() * pics.length)];
+  };
 
-  const filteredCampaign = campaigns?.filter((camp) => {
-    if (onFilterChange === "All") return true; // Don't filter if it's "All"
-    return camp.donationType?.toLowerCase() === onFilterChange.toLowerCase();
-  });
+  console.log(campaigns);
+  const filteredCampaign = campaigns
+    ?.filter((camp) => {
+      if (onFilterChange === "All") return true; // Don't filter if it's "All"
+      return camp.donationType?.toLowerCase() === onFilterChange.toLowerCase();
+    })
+    .map((camp) => ({
+      ...camp, // Spread existing properties of each campaign
+      image: getRandomImage(),
+    }));
 
   React.useEffect(() => {
     if (campaigns.length < 1) {

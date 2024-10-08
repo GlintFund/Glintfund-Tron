@@ -6,7 +6,6 @@ import { CardContainer, CardItem } from "./3d-card";
 import { CampaignT } from "../redux/types";
 import { Link } from "react-router-dom";
 
-
 export const HoverEffect = ({
   items,
   className,
@@ -14,7 +13,7 @@ export const HoverEffect = ({
   items: CampaignT[];
   className?: string;
 }) => {
-    const pics = [
+  const pics = [
     "pic-1.jpg",
     "pic-2.jpg",
     "pic-3.jpg",
@@ -29,7 +28,7 @@ export const HoverEffect = ({
   ];
 
   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const random = Math.floor(Math.random() * pics.length);
+  const random = Math.floor(Math.random() * pics.length);
 
   return (
     <div
@@ -67,9 +66,7 @@ export const HoverEffect = ({
             <CardTitle>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
             <CardContainer className="inter-var">
-              <ImageSection
-                   src={`/dummyPic/${pics[random]}`}
-              />
+              <ImageSection src={`/dummyPic/${item?.image}`} />
             </CardContainer>
             <Progress
               size="sm"
