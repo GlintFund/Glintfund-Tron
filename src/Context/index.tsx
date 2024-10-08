@@ -14,7 +14,7 @@ import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
-const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+const contractAddress_ = "TWE5CpLwpiXpaERhJbKuzUPHZksfPEniVS";
 // const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
 import { useGetMyCampaigns, useGetAllCampaigns } from "../components/functions";
 import { CampaignT } from "../redux/types";

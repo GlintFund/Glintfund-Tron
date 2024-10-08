@@ -51,10 +51,28 @@
       "type": "Event"
     },
     {
+      "outputs": [
+        { "name": "id", "type": "uint256" },
+        { "name": "admin", "type": "address" },
+        { "name": "title", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "amount_required", "type": "uint256" },
+        { "name": "amount_donated", "type": "uint256" },
+        { "name": "donation_complete", "type": "bool" },
+        { "name": "endTime", "type": "uint256" },
+        { "name": "refundable", "type": "bool" },
+        { "name": "donationType", "type": "string" }
+      ],
+      "inputs": [{ "type": "uint256" }],
+      "name": "_campaigns",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "outputs": [{ "type": "uint256" }],
       "name": "campaignCounter",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "outputs": [
@@ -71,8 +89,8 @@
       ],
       "inputs": [{ "type": "uint256" }],
       "name": "campaigns",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -85,58 +103,108 @@
         { "name": "_donationType", "type": "string" }
       ],
       "name": "create",
-      "stateMutability": "Nonpayable",
-      "type": "Function"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "inputs": [{ "name": "id", "type": "uint256" }],
+      "inputs": [
+        { "name": "id", "type": "uint256" },
+        { "name": "tokenAddress", "type": "address" }
+      ],
       "name": "donate",
-      "stateMutability": "Payable",
-      "type": "Function"
+      "stateMutability": "payable",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "uint256" }],
       "inputs": [{ "type": "uint256" }, { "type": "address" }],
       "name": "donatedAmount",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "campaignId", "type": "uint256" },
+        { "name": "tokenAddress", "type": "address" }
+      ],
+      "name": "finalizeCampaign",
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "tuple[]" }],
       "name": "getAllCampaigns",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "tuple[]" }],
+      "name": "getAllCampaigns1",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "tuple[]" }],
+      "name": "getAllCampaigns2",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "tuple[]" }],
+      "name": "getAllUsers",
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "tuple" }],
       "inputs": [{ "name": "campaignId", "type": "uint256" }],
       "name": "getCampaign",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "tuple" }],
+      "inputs": [{ "name": "userAddress", "type": "address" }],
+      "name": "getUserProfile",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_name", "type": "string" },
+        { "name": "_email", "type": "string" },
+        { "name": "_bio", "type": "string" },
+        { "name": "_socialLinks", "type": "string[]" },
+        { "name": "_interests", "type": "string[]" }
+      ],
+      "name": "updateUserProfile",
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "address" }],
       "inputs": [{ "type": "uint256" }],
       "name": "userAddresses",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "uint256" }],
       "inputs": [{ "type": "address" }, { "type": "uint256" }],
       "name": "userCampaigns",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "outputs": [{ "type": "uint256" }],
       "name": "userCounter",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "outputs": [
         { "name": "name", "type": "string" },
+        { "name": "userAddress", "type": "address" },
         { "name": "email", "type": "string" },
         { "name": "bio", "type": "string" },
         { "name": "verified", "type": "bool" },
@@ -144,8 +212,20 @@
       ],
       "inputs": [{ "type": "address" }],
       "name": "userProfiles",
-      "stateMutability": "View",
-      "type": "Function"
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "version",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "outputs": [{ "type": "uint256" }],
+      "name": "versions",
+      "stateMutability": "view",
+      "type": "function"
     }
   ]
 }
