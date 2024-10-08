@@ -62,12 +62,24 @@ export const HoverEffect = ({
               value={(item.amountDonated / item.amountRequired) * 100}
             />
             <p className="py-3">${item.amountDonated} raised</p>
-            <div className="flex-1 gap-y-3">
-              <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">
-                Supported Tokens
-              </p>
-              <div className="flex-1 gap-x-5">
-                <Tag>BNB</Tag> <Tag>SUN</Tag> <Tag>JPX</Tag>
+            <div className="flex flex-row justify-between gap-y-3">
+              <div className=" flex-1 gap-y-3">
+                <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">
+                  Supported Tokens
+                </p>
+                <div className="flex-1 gap-x-5">
+                  <Tag>BNB</Tag> <Tag>SUN</Tag> <Tag>JPX</Tag>
+                </div>
+              </div>
+              <div>
+                <div className=" flex-1 gap-y-3">
+                  <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">
+                    Funding Type
+                  </p>
+                  <div className="flex-1 gap-x-5">
+                    <Tag>{item?.donationType}</Tag>
+                  </div>
+                </div>
               </div>
             </div>
           </Card>

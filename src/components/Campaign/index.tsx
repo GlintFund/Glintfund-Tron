@@ -172,11 +172,16 @@ import { useGetAllCampaigns } from "../functions";
 import { useAppSelector } from "../../redux/hook";
 
 const Campaign = () => {
-  const [onFilterChange, setOnFilterChange] = React.useState("");
+  const [onFilterChange, setOnFilterChange] = React.useState("All");
   const { getAllCampaigns } = useGetAllCampaigns();
   const campaigns = useAppSelector((state) => state.campaign);
 
   console.log(campaigns);
+
+  const filteredCampaign = campaigns?.filter((camp) => {
+    if (onFilterChange === "All") return true; // Don't filter if it's "All"
+    return camp.donationType?.toLowerCase() === onFilterChange.toLowerCase();
+  });
 
   React.useEffect(() => {
     if (campaigns.length < 1) {
@@ -193,7 +198,7 @@ const Campaign = () => {
           {/* <CiFilter/> */}
           <FilterComponent onFilterChange={setOnFilterChange} />
         </div>
-        <HoverEffect items={campaigns} />
+        <HoverEffect items={filteredCampaign} />
       </div>
     </SidebarDemo>
   );
