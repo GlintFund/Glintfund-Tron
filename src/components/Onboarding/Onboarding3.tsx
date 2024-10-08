@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -6,61 +6,63 @@ import {
   Button,
   Flex,
   Textarea,
-  useTimeout,
+  Select,
+  Checkbox,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../Context";
-import {
-  useAccount,
-  useWriteContract,
-  BaseError,
-  useConnect,
-  useReadContract,
-} from "wagmi";
-import contractAbi from "../../contract/CrowdFunding-abi.json";
-import { config } from "../../utils/wagmi";
-import { zetachainAthensTestnet } from "viem/chains";
-import { injected } from "wagmi/connectors";
-import { useGetACampaign } from "../../hooks";
 import toast from "react-hot-toast";
-import { contractAddress } from "../../hooks/index";
 
 function Onboarding3() {
-  const { bio, tags, amount, setBio, initUser } = React.useContext(AppContext);
+  const { bio, tags, amount, setBio, getSmartContract } =
+    React.useContext(AppContext);
   const navigate = useNavigate();
-  const { address } = useAccount();
-  const { data, error, writeContractAsync } = useWriteContract({
-    config,
-  });
-  const { connectAsync } = useConnect();
   const [loading, setLoading] = React.useState(false);
+  const [endTime, setEndTime] = useState("");
+  const [isRefundable, setIsRefundable] = useState(false);
+  const [donationType, setDonationType] = useState("");
 
-  const { data: camp } = useGetACampaign(1);
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const handleCreateUser = async () => {
-    // setLoading(true);
-    // try {
-    //   if (!address) {
-    //     await connectAsync({
-    //       chainId: zetachainAthensTestnet.id,
-    //       connector: injected(),
-    //     });
-    //   }
-    //   const data = await writeContractAsync({
-    //     chainId: zetachainAthensTestnet.id,
-    //     address: contractAddress, // change to receipient address
-    //     functionName: "create",
-    //     abi: contractAbi.abi,
-    //     args: [bio.name, bio.description, Number(amount), tags],
-    //   });
-    //   toast("Account Created Successfully");
-    //   navigate("/profile");
-    //   setLoading(false);
-    // } catch (err) {
-    //   console.log(err);
-    //   toast("Something Went Wrong");
-    //   setLoading(false);
-    // }
+    const smartContract = await getSmartContract();
+    // console.log(bio, tags, amount, isRefundable, donationType, endTime);
+
+    const endTimeBigInt = endTime
+      ? BigInt(new Date(endTime).getTime() / 1000)
+      : null;
+
+    // Handle form submission logic here
+    // console.log("End Time (BigInt):", endTimeBigInt);
+
+    try {
+      const result = await smartContract
+        .create(
+          bio.name,
+          bio.description,
+          BigInt(amount),
+          tags,
+          endTimeBigInt,
+          isRefundable,
+          donationType
+        )
+        .send({
+          from: window.tronWeb.defaultAddress.base58, // Sender's address
+          shouldPollResponse: false, // Optional: wait for confirmation
+        });
+
+      console.log(result);
+      toast("Account Created Successfully");
+      navigate("/profile");
+      setLoading(false);
+    } catch (err) {
+      console.log(err.message);
+      toast(err);
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,8 +72,8 @@ function Onboarding3() {
           Create an Account
         </Text>
         <Text pt={4} fontSize="16px">
-          funding are 100 percent on-chain, secure and tamper-proof on the
-          zetachain. You can fund with any of the tokens but primarily with zeta
+          Funding are 100 percent on-chain, secure and tamper-proof on the Tron.
+          You can fund with any of the tokens but primarily with TRX
         </Text>
       </Box>
       {/* put your details */}
@@ -97,8 +99,41 @@ function Onboarding3() {
               description: e.target.value,
             })
           }
-          placeholder="write a short reason for your zetachain funding"
+          placeholder="write a short reason for your Tron funding"
         />
+        {/* End Time (date) */}
+        <FormControl id="endTime" mb="4">
+          <FormLabel>End Time</FormLabel>
+          <Input
+            type="date"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
+        </FormControl>
+
+        {/* Refundable (bool) */}
+        <FormControl id="refundable" mb="4">
+          <Checkbox
+            isChecked={isRefundable}
+            onChange={(e) => setIsRefundable(e.target.checked)}
+          >
+            Refundable
+          </Checkbox>
+        </FormControl>
+
+        {/* Donation Type (string) */}
+        <FormControl id="donationType" mb="4">
+          <FormLabel>Donation Type</FormLabel>
+          <Select
+            placeholder="Select donation type"
+            value={donationType}
+            onChange={(e) => setDonationType(e.target.value)}
+          >
+            <option value="fundraising">Fundraising</option>
+            <option value="donationLink">Donation Link</option>
+            <option value="paymentLink">Payment</option>
+          </Select>
+        </FormControl>
       </Flex>
 
       <Flex justify="flex-end" mt={8}>

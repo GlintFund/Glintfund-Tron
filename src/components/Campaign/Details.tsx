@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Box,
   Text,
@@ -18,8 +18,8 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppSelector } from "../../redux/hook";
-import { TransactionT } from "../../redux/types";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { CampaignT, TransactionT } from "../../redux/types";
 import { IoIosArrowBack } from "react-icons/io";
 import SideNav from "../SideNav/HalfSide";
 import { contractAddress, useGetACampaign_ } from "../../hooks";
@@ -30,9 +30,11 @@ import { parseEther } from "viem";
 // import { getTokenPrice } from "../../utils/tokenPrice";
 import { getTokenConversion } from "../../utils/tokenPrice";
 import { zetachainAthensTestnet } from "viem/chains";
-import {SidebarDemo} from "../Sidebar"
+import { SidebarDemo } from "../Sidebar";
 import { injected } from "wagmi/connectors";
 import { config } from "../../utils/wagmi";
+import { addCampaignInView } from "../../redux/slice/CampInViewSlice";
+import { AppContext } from "../../Context";
 
 function Details() {
   const { id } = useParams();
@@ -45,9 +47,11 @@ function Details() {
   const parse = (val: string) => val.replace(/^\Z/, "");
   const { connectAsync } = useConnect();
   const [loading, setLoading] = useState<boolean>(false);
-  const { data, error, writeContractAsync } = useWriteContract({
-    config,
-  });
+  const dispatch = useAppDispatch();
+  const details: CampaignT = useAppSelector(
+    (state) => state.CampaignInViewSlice
+  );
+  const { getSmartContract } = useContext(AppContext);
 
   const { data: contractData, isLoading } = useGetACampaign_(id);
 
@@ -57,11 +61,34 @@ function Details() {
   };
 
   useEffect(() => {
-    if (contractData) {
-      console.log("Campaign data:", contractData);
-      convert();
-    }
-  }, [contractData]);
+    const callOnMount = async () => {
+      try {
+        setLoading(true);
+        const contract = await getSmartContract();
+        const data = await contract?.campaigns(BigInt(id)).call();
+        console.log(data);
+        if (data) {
+          const val: CampaignT = {
+            address: window.tronWeb.address.fromHex(data.admin),
+            title: data.title,
+            amountDonated: data.amount_donated.toNumber(),
+            amountRequired: data.amount_required.toNumber(),
+            description: data.description,
+            donationComplete: data.donation_complete,
+            id: data.id.toNumber(),
+            endTime: data.endTime.toNumber(),
+            donationType: data.donationType,
+          };
+          dispatch(addCampaignInView(val));
+          setLoading(false);
+        }
+      } catch (err) {
+        setLoading(false);
+        toast.error("Connect your wallet to donate");
+      }
+    };
+    callOnMount();
+  }, []);
 
   const handleDonate = async () => {
     // try {
@@ -95,7 +122,7 @@ function Details() {
     setValue(+parse(valueString));
   };
 
-  if (!contractData) {
+  if (loading) {
     return (
       <SideNav>
         <Center>
@@ -112,7 +139,7 @@ function Details() {
           <Box onClick={() => navigate(-1)}>
             <IoIosArrowBack />
           </Box>
-          <Text>ZetaFunding for {contractData[2]}</Text>
+          <Text textWrap="wrap">ZetaFunding for {details?.title}</Text>
           <Box />
         </Flex>
 
@@ -122,8 +149,7 @@ function Details() {
           mx={8}
           px={8}
           borderRadius={"15px"}
-          h={170}
-         bgColor="gray.200"
+          bgColor="gray.200"
           gap={6}
           transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
           _hover={{
@@ -132,12 +158,11 @@ function Details() {
           }}
           cursor="pointer"
         >
-          <Flex color="#5E5E5E"  fontWeight={600} justify="space-between">
-            <Text>{contractData[5]}</Text>
+          <Flex color="#5E5E5E" fontWeight={600} justify="space-between">
+            <Text>{details?.description}</Text>
             <Text>
-              {Math.floor(
-                Number(contractData[6]) / 10 ** 18 / Number(contractData[3])
-              ) * 100}
+              {Math.floor(details?.amountDonated / details?.amountRequired) *
+                100}
               %
             </Text>
           </Flex>
@@ -145,15 +170,14 @@ function Details() {
             ${dollarVal}
           </Flex>
           <Flex color="#1935C4" fontWeight={600} mt={3} justify="space-between">
-            <Text>Z{Number(contractData[6]) / 10 ** 18}</Text>
-            <Text>Z{Number(contractData[3])}</Text>
+            <Text>T{details?.amountDonated}</Text>
+            <Text>T{details?.amountRequired}</Text>
           </Flex>
           <Progress
             color="#1935C4"
-            value={Math.floor(
-              (Number(contractData[6]) / 10 ** 18 / Number(contractData[3])) *
-                100
-            )}
+            value={
+              Math.floor(details?.amountDonated / details?.amountRequired) * 100
+            }
           />
         </Box>
 
@@ -177,7 +201,7 @@ function Details() {
           </Button>
         </Box>
       </div>
-      </SidebarDemo>
+    </SidebarDemo>
   );
 }
 

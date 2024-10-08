@@ -6,14 +6,13 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import {Link,Image} from "@chakra-ui/react";
+import { Link, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { cn } from "../..//lib/utils";
 import Logo from "../Logo";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import WalletButton from "../WalletButton";
 
-
-export function SidebarDemo({children}) {
+export function SidebarDemo({ children }) {
   const links = [
     {
       label: "Dashboard",
@@ -37,8 +36,8 @@ export function SidebarDemo({children}) {
       ),
     },
     {
-      label: "Lending/Borrowing",
-      href: "/lending",
+      label: "P2P Fund Exchange",
+      href: "/exchange",
       icon: (
         <IconArrowLeft className="text-neutral-200 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -62,19 +61,13 @@ export function SidebarDemo({children}) {
               ))}
             </div>
           </div>
-          {/* <div>
-          <ConnectButton
-            chainStatus="none"
-            accountStatus={{
-              smallScreen: "avatar",
-              largeScreen: "avatar",
-            }}
-          />
-          </div> */}
+          <div>
+            <WalletButton />
+          </div>
         </SidebarBody>
       </Sidebar>
       <div className="overflow-y-scroll w-full h-screen bg-customPurple">
-      {children}
+        {children}
       </div>
       {/* <Dashboard /> */}
     </div>
@@ -91,5 +84,3 @@ export const LogoIcon = () => {
     </Link>
   );
 };
-
-

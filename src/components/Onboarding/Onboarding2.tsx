@@ -11,15 +11,16 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 import { AppContext } from "../../Context";
-import { getTokenConversion } from "../../utils/tokenPrice";
+import { getTokenConversionPrice } from "../../utils/tokenPrice";
 import { useAppSelector, useAppDispatch } from "../../redux/hook";
 import { addPrice } from "../../redux/slice/PriceSlice";
 
 function Onboarding2() {
-  const { setStep, amount, setAmount } = React.useContext(AppContext);
+  const { setStep, amount, setAmount, coinToRaiseIn } =
+    React.useContext(AppContext);
   console.log(amount);
-  const format = (val: number) => `Z` + val;
-  const parse = (val: string) => val.replace(/^\Z/, "");
+  const format = (val: number) => `T` + val;
+  const parse = (val: string) => val.replace(/^\T/, "");
   const [converstion, setConverstion] = React.useState(0);
   const price = useAppSelector((state) => state.price);
   const dispatch = useAppDispatch();
@@ -30,7 +31,8 @@ function Onboarding2() {
 
   React.useEffect(() => {
     const cc = async () => {
-      const val = await getTokenConversion(amount);
+      console.log(coinToRaiseIn)
+      const val = await getTokenConversionPrice(amount, coinToRaiseIn.name);
       setConverstion(val);
     };
 
@@ -44,9 +46,9 @@ function Onboarding2() {
           How much would you like to raise?
         </Text>
         <Text pt={4} fontSize="16px">
-          funding are 100 percent on-chain, secure and tamper-proof on the
-          zetachain blockchain. You can fund with any tokens supported on
-          Zetachain but primarily with Zeta
+          funding are 100 percent on-chain, secure and tamper-proof on the Tron
+          blockchain. You can fund with any tokens supported on Tron but
+          primarily with TRX
         </Text>
       </Box>
       {/* pick funding type */}
@@ -57,7 +59,7 @@ function Onboarding2() {
             color="primary.50"
             fontSize="1.2em"
           >
-            Z
+            T
           </InputLeftElement>
           <NumberInput
             value={format(amount)}
@@ -69,7 +71,7 @@ function Onboarding2() {
           </NumberInput>
         </InputGroup>
         <Input
-          placeholder="equivalent zeta presently"
+          placeholder="equivalent TRX presently"
           size="lg"
           readOnly
           isDisabled

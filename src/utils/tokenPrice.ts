@@ -31,3 +31,10 @@ export async function getTokenConversion(zeta: number) {
   console.log("converstion", ans);
   return ans;
 }
+
+export async function getTokenConversionPrice(coin: number, tokenId: string) {
+  if (coin === 0) return 0;
+  var ans = coin / (await getTokenPrice(tokenId));
+  console.log("converstion", ans);
+  return ans;
+}

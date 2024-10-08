@@ -3,6 +3,9 @@ import recipient from "./slice/RecepientSlice";
 import campaign from "./slice/CampaignSlice";
 import transction from "./slice/TransactionSlice";
 import price from "./slice/PriceSlice";
+import tronData from "./slice/TronDataSlice";
+import myCampaigns from "./slice/MyCampaignSlice";
+import CampaignInViewSlice from "./slice/CampInViewSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +13,9 @@ export const store = configureStore({
     campaign,
     transction,
     price,
+    tronData,
+    myCampaigns,
+    CampaignInViewSlice,
   },
 });
 

@@ -5,14 +5,12 @@ function Nav2() {
   return (
     <div className="flex justify-between mt-6">
       <div className="flex">
-        <p className="text-2xl font-bold font-extrabold">
+        <p className="text-2xl  font-extrabold">
           <Logo />
         </p>
       </div>
-      <div className="hidden md:flex gap-12 items-center justify-center z-[100000]">
-        <button className="btn">
-          Home
-        </button>
+      <div className="hidden md:flex gap-12 items-center justify-center z-[20]">
+        <button className="btn">Home</button>
         <a
           href="https://medium.com/@glintfund"
           target="_blank"

@@ -2,7 +2,12 @@
   "name": "glint-fund",
   "version": "0.2.0",
   "private": true,
+  "scripts": {
+    "start": "vite --port 3000 --host",
+    "build": "vite build"
+  },
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@chakra-ui/icons": "^2.1.1",
@@ -21,8 +26,9 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.98",
+    "@types/node": "^20.10.0",
     "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
     "@web3modal/wagmi": "^5.0.2",
     "ajv": "^8.17.1",
     "ajv-keywords": "^5.1.0",
@@ -33,8 +39,10 @@
     "css-loader": "^7.1.2",
     "file-loader": "^6.2.0",
     "framer-motion": "^11.3.30",
+    "i18next": "^23.2.3",
     "lottie-react": "^2.4.0",
     "postcss-loader": "^8.1.1",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.3.1",
@@ -43,8 +51,6 @@
     "react-icons": "^5.2.1",
     "react-redux": "^9.1.2",
     "react-router-dom": "^6.23.1",
-    "react-scripts": "5.0.1",
-    "save-dev": "^0.0.1-security",
     "style-loader": "^4.0.0",
     "svg-loader": "^0.0.2",
     "tailwind-merge": "^2.5.2",
@@ -52,17 +58,13 @@
     "ts-loader": "^9.5.1",
     "url-loader": "^4.1.1",
     "viem": "^2.14.2",
+    "vite": "^5.4.8",
+    "vite-plugin-environment": "^1.1.3",
     "wagmi": "^2.10.2",
     "web-vitals": "^2.1.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -93,6 +95,7 @@
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@zetachain/protocol-contracts": "^9.0.0",
@@ -107,6 +110,6 @@
     "solidity-coverage": "^0.8.0",
     "tailwindcss": "^3.4.10",
     "typechain": "^8.3.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
