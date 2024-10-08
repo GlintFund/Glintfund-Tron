@@ -1,10 +1,10 @@
 import { cn } from "../lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Image, Link, Progress, Tag } from "@chakra-ui/react";
+import { Image, Progress, Tag } from "@chakra-ui/react";
 import { useState } from "react";
 import { CardContainer, CardItem } from "./3d-card";
 import { CampaignT } from "../redux/types";
-
+import { Link } from "react-router-dom";
 export const HoverEffect = ({
   items,
   className,
@@ -23,7 +23,7 @@ export const HoverEffect = ({
     >
       {items.map((item, idx) => (
         <Link
-          href={`/details/${item.id}`}
+          to={`/details/${item.id}`}
           key={item?.id}
           className="relative group  block p-2 h-full w-full"
           onMouseEnter={() => setHoveredIndex(idx)}
