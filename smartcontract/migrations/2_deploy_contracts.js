@@ -1,5 +1,5 @@
-// var MyContract = artifacts.require("./MyContract.sol");
+var Glint = artifacts.require("./glint.sol");
 
 module.exports = function(deployer) {
-  // deployer.deploy(MyContract);
+  deployer.deploy(Glint, "Deploying Glint..");
 };

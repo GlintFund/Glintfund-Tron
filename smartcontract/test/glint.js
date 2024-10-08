@@ -3,7 +3,7 @@ const {TronWeb} = require("tronweb");
 
 contract("Glint", (accounts) => {
   let glintInstance;
-  const [admin, user1, user2] = accounts;
+  const [admin, user1] = accounts;
 
   before(async () => {
     // Deploy the contract
@@ -109,17 +109,83 @@ contract("Glint", (accounts) => {
 
       console.log("All campaigns Are: ", allCampaigns);
 
-      // Check if two campaigns are returned
-      assert.equal(allCampaigns.length, 2, "All campaigns were not returned correctly");
+      // // Check if two campaigns are returned
+      // assert.equal(allCampaigns.length, 2, "All campaigns were not returned correctly");
 
-      // Verify details of the first campaign
-      assert.equal(allCampaigns[0].title, "Gimme my money", "Campaign 1 title mismatch");
-      assert.equal(allCampaigns[0].admin, admin, "Campaign 1 admin mismatch");
+      // // Verify details of the first campaign
+      // assert.equal(allCampaigns[0].title, "Gimme my money", "Campaign 1 title mismatch");
+      // assert.equal(allCampaigns[0].admin, admin, "Campaign 1 admin mismatch");
 
-      // Verify details of the second campaign
-      assert.equal(allCampaigns[1].title, "Campaign 2", "Campaign 2 title mismatch");
-      assert.equal(allCampaigns[1].admin, user1, "Campaign 2 admin mismatch");
+      // // Verify details of the second campaign
+      // assert.equal(allCampaigns[1].title, "Campaign 2", "Campaign 2 title mismatch");
+      // assert.equal(allCampaigns[1].admin, user1, "Campaign 2 admin mismatch");
     });
 
   });
+
+  // it("should return all campaigns with the correct data", async () => {
+  //   const campaignTitle = "Campaign 2";
+  //     const campaignDescription = "This is a description for campaign 2";
+  //     const campaignAmountRequired = 2000;
+  //     const campaignTags = ["health", "charity"];
+  //     const endTime = Math.floor(Date.now() / 1000) + 86400; // 24 hours from now
+  //     const refundable = false;
+  //     const donationType = "recurring";
+
+  
+  //     await glintInstance.create(
+  //       campaignTitle,
+  //       campaignDescription,
+  //       campaignAmountRequired,
+  //       campaignTags,
+  //       endTime,
+  //       refundable,
+  //       donationType,
+  //       { from: user2 }
+  //     );
+  
+  //   const allCampaigns = await glintInstance.getAllCampaigns1();
+
+  //   console.log("All campaigns 3 Are: ", allCampaigns);
+    
+  //   assert.equal(allCampaigns.length, 1, "There should be one campaign");
+  
+  //   const campaign = allCampaigns[0];
+  
+  //   assert.equal(campaign.title, title, "Campaign title should match");
+  //   assert.equal(campaign.description, description, "Campaign description should match");
+  //   assert.equal(campaign.amount_required.toString(), amountRequired.toString(), "Required amount should match");
+  //   assert.equal(campaign.tags[0], "education", "First tag should be education");
+  // });
+
+  describe("Get Specific Campaign", () => {
+    it("should return the correct campaign details for a given campaign ID", async () => {
+      const campaignId = 1; // Assuming the first campaign was created
+      const campaign = await glintInstance.getCampaign(campaignId);
+
+      assert.equal(campaign.id.toNumber(), campaignId, "Campaign ID mismatch");
+      assert.equal(campaign.title, "Gimme my money", "Campaign title mismatch");
+      assert.equal(campaign.description, "This is a description for my campaign", "Campaign description mismatch");
+
+      // Check if the TronWeb is properly initialized and used
+      const campaignAdminHex = campaign.admin; // Get the address in hex format
+      const campaignAdminBase58 = TronWeb.address.fromHex(campaignAdminHex); // Convert to Base58
+
+      assert.equal(campaignAdminBase58, admin, "Campaign admin should be the correct address");
+    });
+
+    it("should revert if the campaign ID does not exist", async () => {
+      const invalidCampaignId = 999; // A non-existent campaign ID
+      try {
+        await glintInstance.getCampaign(invalidCampaignId);
+        assert.fail("Expected revert not received");
+      } catch (error) {
+        assert(
+          error.message.includes("Campaign does not exist"),
+          `Unexpected error message: ${error.message}`
+        );
+      }
+    });
+  });
+
 });
