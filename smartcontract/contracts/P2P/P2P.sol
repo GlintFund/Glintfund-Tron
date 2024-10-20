@@ -72,6 +72,8 @@ contract P2PLending {
     event LoanDefaulted(uint256 indexed loanId, address indexed lender, uint256 collateralClaimed);
 
 
+    // TODO: Track both lender and borrower record
+
    /**
      * @notice Lender creates a new loan proposal for borrowers to browse.
      * @param loanAmount Amount of stable tokens to lend.
@@ -158,6 +160,36 @@ contract P2PLending {
         proposal.isActive = false;
 
         emit LoanAccepted(loanCounter, msg.sender, proposalId);
+    }
+
+     // Repay Loan (Borrower)
+    function repayLoan(uint256 activeLoanId) external {
+        ActiveLoan storage activeLoan = activeLoans[activeLoanId];
+        require(msg.sender == activeLoan.borrower, "Only borrower can repay");
+        require(!activeLoan.isRepaid, "Loan already repaid");
+
+        // Calculate the repayment amount (loan amount + interest)
+        uint256 repaymentAmount = activeLoan.loanAmount + (activeLoan.loanAmount * activeLoan.interestRate / 100);
+        
+        // Transfer repayment (loan + interest) to lender
+        require(ITRC20(activeLoan.loanToken).transferFrom(msg.sender, activeLoan.borrower, repaymentAmount), "Repayment transfer failed");
+
+        // Return collateral to the borrower
+        require(ITRC20(activeLoan.collateralToken).transfer(activeLoan.borrower, activeLoan.collateralAmount), "Collateral return failed");
+
+        activeLoan.isRepaid = true;
+
+        emit LoanRepaid(activeLoanId, msg.sender, repaymentAmount);
+    }
+
+    // Retrieve Loan Proposal details
+    function getLoanProposal(uint256 loanId) external view returns (LoanProposal memory) {
+        return loanProposals[loanId];
+    }
+
+    // Retrieve Active Loan details
+    function getActiveLoan(uint256 activeLoanId) external view returns (ActiveLoan memory) {
+        return activeLoans[activeLoanId];
     }
 
 

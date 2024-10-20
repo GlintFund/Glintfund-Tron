@@ -4,11 +4,6 @@ pragma solidity >=0.4.22 <0.9.0;
 import "./ITRC20.sol";
 
 contract Glint {
-
-  // A slight modification to make the contract "different"
-  // uint256 public versions = 1;
-  // uint256 public version = 1;
-  uint256 public version3 = 1;
   
   struct Campaign {
     uint256 id;
@@ -159,13 +154,14 @@ contract Glint {
      * @param id The ID of the campaign to contribute to
      * @param tokenAddress The address of the token being contributed
      */
-    function donate(uint256 id, address tokenAddress) external payable {
+    function multiDonate(uint256 id, address tokenAddress) external payable {
         Campaign storage campaign = campaigns[id];
         require(!campaign.donation_complete, "Campaign closed, donation complete");
         require(msg.value > 0, "Contribution must be greater than 0");
 
         campaign.amount_donated += uint256(msg.value);
         donatedAmount[id][msg.sender] += uint256(msg.value);
+
         // Transfer tokens from the contributor to the campaign
         ITRC20(tokenAddress).transferFrom(msg.sender, address(this), msg.value);
 
@@ -176,12 +172,81 @@ contract Glint {
         }
     }
 
+    function donate(uint256 id) external payable {
+        Campaign storage campaign = campaigns[id];
+        
+   
+        require(!campaign.donation_complete, "donation complete");
+        require(msg.value > 0, "No TRX sent");
+
+    
+        campaign.amount_donated += msg.value;
+        donatedAmount[id][msg.sender] += msg.value;
+
+        emit Donate(id, msg.sender, msg.value);
+
+        // Check if the required amount has been reached and mark donation as complete if so
+        if (campaign.amount_donated >= campaign.amount_required) {
+            campaign.donation_complete = true;
+        }
+    }
+
+
+    function pledge(uint256 id) external payable {
+      Campaign storage campaign = campaigns[id];
+      
+      // Ensure that the donation is not complete
+      require(!campaign.donation_complete, "donation complete");
+      // Ensure that some TRX is sent
+      require(msg.value > 0, "No TRX sent");
+
+      // Add the donated amount to the campaign's total
+      campaign.amount_donated += msg.value;
+      // Track the donated amount for this donor
+      donatedAmount[id][msg.sender] += msg.value;
+
+      // Emit the Donate event
+      emit Donate(id, msg.sender, msg.value);
+
+      // Check if the required amount has been reached and mark donation as complete if so
+      if (campaign.amount_donated >= campaign.amount_required) {
+          campaign.donation_complete = true;
+      }
+  }
+
+  function pledgeAdmin(uint256 id) external payable {
+    Campaign storage campaign = campaigns[id];
+    
+    // Ensure that the donation is not complete
+    require(!campaign.donation_complete, "Donation already complete");
+    // Ensure that some TRX is sent
+    require(msg.value > 0, "No TRX sent");
+
+    // Add the donated amount to the campaign's total
+    campaign.amount_donated += msg.value;
+    // Track the donated amount for this donor
+    donatedAmount[id][msg.sender] += msg.value;
+
+    // Transfer the TRX to the campaign admin
+    (bool success, ) = campaign.admin.call{value: msg.value}("");
+    require(success, "Transfer to campaign admin failed");
+
+    // Emit the Donate event
+    emit Donate(id, msg.sender, msg.value);
+
+    // Check if the required amount has been reached and mark donation as complete if so
+    if (campaign.amount_donated >= campaign.amount_required) {
+        campaign.donation_complete = true;
+    }
+}
+
+
     /**
      * @notice Finalizes a campaign once the funding goal is met
      * @param campaignId The ID of the campaign to finalize
       * @param tokenAddress The address of the token to transfer and finalize
      */
-    function finalizeCampaign(uint256 campaignId, address tokenAddress) public {
+    function multiFinalizeCampaign(uint256 campaignId, address tokenAddress) public {
         Campaign storage campaign = campaigns[campaignId];
         require(campaign.admin == msg.sender, "Only the owner can finalize");
         require(campaign.amount_donated >= campaign.amount_required, "Funding goal not met");
@@ -190,6 +255,53 @@ contract Glint {
         campaign.donation_complete = true;
         ITRC20(tokenAddress).transfer(campaign.admin, campaign.amount_donated);
     }
+
+    function finalizeCampaign(uint256 campaignId) public {
+        Campaign storage campaign = campaigns[campaignId];
+
+        // Ensure only the campaign admin can finalize
+        require(campaign.admin == msg.sender, "Only the owner can finalize");
+        // Ensure the campaign has raised enough funds
+        require(campaign.amount_donated >= campaign.amount_required, "Funding goal not met");
+        // Check if the campaign is already finalized
+        require(!campaign.donation_complete, "Campaign is already finalized");
+
+        // Mark the campaign as complete before transferring funds (reentrancy protection)
+        campaign.donation_complete = true;
+
+        // Transfer the raised TRX funds to the admin
+        (bool success, ) = campaign.admin.call{value: campaign.amount_donated}("");
+        require(success, "TRX Transfer failed");
+
+        // Emit an event for logging
+        emit Claim(campaignId);
+    }
+
+    function refund(uint256 id) external {
+        Campaign storage campaign = campaigns[id];
+
+        // Check that the campaign is refundable and not yet completed
+        require(campaign.refundable, "Campaign is not refundable");
+        require(!campaign.donation_complete, "Cannot refund, campaign is complete");
+
+        // Check the user donated something
+        uint256 donatedAmountForUser = donatedAmount[id][msg.sender];
+        require(donatedAmountForUser > 0, "No donation found to refund");
+
+        // Reset the user's donated amount to 0
+        donatedAmount[id][msg.sender] = 0;
+
+        // Reduce the total amount donated to the campaign
+        campaign.amount_donated -= donatedAmountForUser;
+
+        // Transfer the TRX back to the user
+        (bool success, ) = msg.sender.call{value: donatedAmountForUser}("");
+        require(success, "Refund transfer failed");
+
+        // Emit Refund event
+        emit Refund(id, msg.sender, donatedAmountForUser);
+    }
+
 
     function getAllCampaigns1() external view returns (Campaign[] memory) {
     Campaign[] memory allCampaigns = new Campaign[](campaignCounter);
