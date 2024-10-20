@@ -7,18 +7,17 @@ import { CampaignT } from "../../redux/types";
 
 export const useGetAllCampaigns = () => {
   const [loading, setLoading] = useState(false);
-  const { getSmartContract } = useContext(AppContext);
   const dispatch = useAppDispatch();
 
-  const getAllCampaigns = async () => {
+  const getAllCampaigns = async (getSmartContract) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const contract = await getSmartContract();
-      const totalCamp = await contract?.campaignCounter().call();
+      const totalCamp = await contract.campaignCounter().call();
+
       for (let i = 1; i <= totalCamp.toNumber(); i++) {
-        const data = await contract?.campaigns(BigInt(i)).call();
-        console.log(data);
-        var param = {
+        const data = await contract.campaigns(BigInt(i)).call();
+        const param = {
           address: window.tronWeb.address.fromHex(data.admin),
           title: data.title,
           amountDonated: data.amount_donated.toNumber(),
@@ -31,11 +30,10 @@ export const useGetAllCampaigns = () => {
         };
         dispatch(addCampaign(param));
       }
-      setLoading(false);
     } catch (err) {
-      //   toast.error("something went wrong");
+      console.error("Error fetching campaigns:", err);
+    } finally {
       setLoading(false);
-      console.log(err);
     }
   };
 
@@ -65,4 +63,36 @@ export const useGetMyCampaigns = () => {
   };
 
   return { getMyCampaigns, loading };
+};
+
+export const useApproveSpending = () => {
+  const [loading, setLoading] = useState(false);
+
+  const approveSpending = async (tokenAddress, contractAddress, amount) => {
+    try {
+      setLoading(true);
+      const getTokenContract = async (tokenAddress) => {
+        const tokenContract = await window.tronWeb.contract().at(tokenAddress);
+        return tokenContract;
+      };
+
+      // Get the TRC20 token contract
+      const tokenContract = await getTokenContract(tokenAddress);
+
+      // Approve the donation contract to spend tokens on behalf of the user
+      const result = await tokenContract
+        .approve(contractAddress, window.tronWeb.toSun(amount))
+        .send({
+          from: window.tronWeb.defaultAddress.base58,
+        });
+      setLoading(false);
+      console.log("Approval successful:", result);
+      return result;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error approving tokens:", error);
+      throw error;
+    }
+  };
+  return { approveSpending, loading };
 };

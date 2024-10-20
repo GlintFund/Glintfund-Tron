@@ -16,8 +16,38 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import { AppContext } from "../../Context";
+import toast from "react-hot-toast";
 
 function LendModal({ onToggle, isOpen }) {
+  const { getSmartContract } = React.useContext(AppContext);
+  const [donateLoading, setDonateLoading] = React.useState<boolean>(false);
+
+  const handleDonate = async () => {
+    try {
+      setDonateLoading(true);
+      const contract = await getSmartContract();
+      var theId = 2;
+      const donate = await contract
+        .donate(BigInt(theId), "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9")
+        .send({
+          callValue: window?.tronWeb.toSun(50),
+          from: window.tronWeb.defaultAddress.base58,
+          shouldPollResponse: false,
+        });
+      console.log(donate);
+      if (donate) {
+        setDonateLoading(false);
+        toast.success("Offer created Successful");
+      }
+    } catch (err: any) {
+      setDonateLoading(false);
+      toast.error(err.message);
+      console.log(err);
+      return;
+    }
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onToggle} size={{ base: "sm", md: "lg" }}>
@@ -81,7 +111,12 @@ function LendModal({ onToggle, isOpen }) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
+            <Button
+              isLoading={donateLoading}
+              colorScheme="blue"
+              mr={3}
+              onClick={handleDonate}
+            >
               Submit Offer
             </Button>
             <Button onClick={onToggle} variant="ghost">

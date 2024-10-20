@@ -25,38 +25,34 @@ import SideNav from "../SideNav/HalfSide";
 import { contractAddress, useGetACampaign_ } from "../../hooks";
 import { useAccount, useConnect, useWriteContract } from "wagmi";
 import toast from "react-hot-toast";
-import contractAbi from "../../contract/CrowdFunding-abi.json";
 import { parseEther } from "viem";
 // import { getTokenPrice } from "../../utils/tokenPrice";
 import { getTokenConversion } from "../../utils/tokenPrice";
-import { zetachainAthensTestnet } from "viem/chains";
 import { SidebarDemo } from "../Sidebar";
-import { injected } from "wagmi/connectors";
-import { config } from "../../utils/wagmi";
 import { addCampaignInView } from "../../redux/slice/CampInViewSlice";
-import { AppContext } from "../../Context";
+import { AppContext, contractAddress_ } from "../../Context";
+import { useApproveSpending } from "../functions";
 
 function Details() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { address } = useAccount();
   const [value, setValue] = useState<number>(0);
   const [dollarVal, setDollarVal] = useState(0);
   const [eqSendingDollar, seteqSendingDollar] = useState(0);
-  const format = (val: number) => `Z${val}`;
-  const parse = (val: string) => val.replace(/^\Z/, "");
-  const { connectAsync } = useConnect();
+  const format = (val: number) => `T${val}`;
+  const parse = (val: string) => val.replace(/^\T/, "");
   const [loading, setLoading] = useState<boolean>(false);
+  const [donateLoading, setDonateLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const details: CampaignT = useAppSelector(
     (state) => state.CampaignInViewSlice
   );
   const { getSmartContract } = useContext(AppContext);
-
-  const { data: contractData, isLoading } = useGetACampaign_(id);
+  const { approveSpending, loading: approveSpendLoading } =
+    useApproveSpending();
 
   const convert = async () => {
-    const val = await getTokenConversion(Number(contractData[3]));
+    const val = await getTokenConversion(details?.amountRequired);
     setDollarVal(val);
   };
 
@@ -81,6 +77,7 @@ function Details() {
           };
           dispatch(addCampaignInView(val));
           setLoading(false);
+          convert();
         }
       } catch (err) {
         setLoading(false);
@@ -91,31 +88,33 @@ function Details() {
   }, []);
 
   const handleDonate = async () => {
-    // try {
-    //   setLoading(true);
-    //   if (value <= 0) {
-    //     return toast.error("you can't send below 0 Zeta");
-    //   } else if (!address) {
-    //     await connectAsync({
-    //       chainId: zetachainAthensTestnet.id,
-    //       connector: injected(),
-    //     });
-    //   }
-    //   const hash = await writeContractAsync({
-    //     abi: contractAbi.abi,
-    //     address: contractAddress,
-    //     functionName: "donate",
-    //     value: parseEther(`${value}`),
-    //     args: [id],
-    //   });
-    //   console.log(hash);
-    //   setLoading(false);
-    //   toast.success("Donation Successful");
-    // } catch (err: any) {
-    //   setLoading(false);
-    //   toast.error(err.message);
-    //   return;
-    // }
+    try {
+      setDonateLoading(true);
+      // await approveSpending(
+      //   "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9",
+      //   contractAddress_,
+      //   value
+      // );
+      const contract = await getSmartContract();
+      var theId = +id;
+      const donate = await contract
+        .donate(BigInt(theId), "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9")
+        .send({
+          callValue: window?.tronWeb.toSun(value),
+          from: window.tronWeb.defaultAddress.base58,
+          shouldPollResponse: false,
+        });
+      console.log(donate);
+      if (donate) {
+        setDonateLoading(false);
+        toast.success("Donation Successful");
+      }
+    } catch (err: any) {
+      setDonateLoading(false);
+      toast.error(err.message);
+      console.log(err);
+      return;
+    }
   };
 
   const handleSendVal = (valueString: string) => {
@@ -139,7 +138,9 @@ function Details() {
           <Box onClick={() => navigate(-1)}>
             <IoIosArrowBack />
           </Box>
-          <Text textWrap="wrap">ZetaFunding for {details?.title}</Text>
+          <Text overflowWrap="break-word">
+            TronFunding for {details?.title}
+          </Text>
           <Box />
         </Flex>
 
@@ -187,7 +188,7 @@ function Details() {
             min={0}
             onChange={(valueString) => handleSendVal(valueString)}
           >
-            <NumberInputField my={3} placeholder="how much in zeta?" />
+            <NumberInputField my={3} placeholder="how much in tron?" />
           </NumberInput>
           <Button
             onClick={handleDonate}
@@ -195,7 +196,7 @@ function Details() {
             my={3}
             color="white"
             bgColor="purple"
-            isLoading={loading}
+            isLoading={donateLoading}
           >
             Send
           </Button>

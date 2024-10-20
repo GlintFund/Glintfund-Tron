@@ -17,6 +17,7 @@ export type CampaignT = {
   id: number;
   endTime: number;
   donationType: string;
+  image?: string;
 };
 
 export type TransactionT = {

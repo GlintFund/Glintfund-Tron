@@ -14,10 +14,11 @@ import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
-const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+export const contractAddress_ = "TWE5CpLwpiXpaERhJbKuzUPHZksfPEniVS";
 // const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
 import { useGetMyCampaigns, useGetAllCampaigns } from "../components/functions";
 import { CampaignT } from "../redux/types";
+import { useDisclosure } from "@chakra-ui/react";
 
 type bioT = {
   name: string;
@@ -43,6 +44,8 @@ export const AppContext = React.createContext<{
   donate: any;
   coinToRaiseIn: any;
   setCoinToRaiseIn: any;
+  onToggle: any;
+  isOpen: boolean;
 }>({
   step: 1,
   setStep: undefined,
@@ -62,6 +65,8 @@ export const AppContext = React.createContext<{
   donate: undefined,
   coinToRaiseIn: undefined,
   setCoinToRaiseIn: undefined,
+  onToggle: undefined,
+  isOpen: false,
 });
 
 // const network = "https://api.shasta.trongrid.io";
@@ -108,6 +113,8 @@ export const AppProvider = ({ children }: any) => {
   const { address } = useAccount();
   const walletAddress = useAppSelector((state) => state.tronData.walletAddress);
   const campaigns = useAppSelector((state) => state.campaign);
+  const { onToggle, isOpen } = useDisclosure();
+
   const getUser = () => {};
 
   const getSmartContract = async () => {
@@ -129,50 +136,36 @@ export const AppProvider = ({ children }: any) => {
 
   React.useEffect(() => {
     const call = async () => {
-      await getAllCampaigns();
+      if (walletAddress) {
+        await getAllCampaigns(getSmartContract);
+
+        const userExist = campaigns?.some(
+          (campaign: CampaignT) => campaign.address === walletAddress
+        );
+        if (userExist) {
+          console.log("user exists");
+          // const previousPage = location.state?.from || "campaign";
+          // navigate(previousPage);
+          navigate("campaign");
+          return;
+        } else if (!userExist) {
+          if (location.pathname.includes("connect-wallet")) {
+            onToggle();
+            return;
+          } else {
+            // await getAllCampaigns(getSmartContract);
+            navigate("/campaign");
+            return;
+          }
+        }
+      } else if (!walletAddress && location.pathname.includes("details/")) {
+        return;
+      } else {
+        navigate("/");
+      }
     };
     call();
-
-    const userExist = campaigns?.filter(
-      (campaign: CampaignT) => campaign.address === walletAddress
-    );
-    console.log(userExist, "UserExist");
-    // console.log(campaigns, "camp");
-    if (userExist === undefined) {
-      return;
-    }
-    if (!walletAddress && location.pathname.includes("details/")) {
-      return;
-    } else if (!walletAddress) {
-      navigate("/");
-    } else if (userExist.length > 0) {
-      getMyCampaigns();
-
-      const previousPage = location.state?.from || "campaign";
-      navigate(previousPage);
-    } else if (userExist.length === 0) {
-      navigate("/");
-    }
-  }, [walletAddress, isLoading_]);
-
-  // React.useEffect(() => {
-  //   const connectWallet = async () => {
-  //     if(walletAddress) {
-  //       await getAllCampaigns();
-  //       await getMyCampaigns();
-  //     }
-
-  //     if (myCampaigns.length > 0) {
-  //       const previousPage = location.state?.from || "campaign";
-  //       navigate(previousPage);
-  //     } else if (!walletAddress) {
-  //       navigate("/");
-  //     } else if (myCampaigns.length === 0) {
-  //       navigate("/onboarding");
-  //     }
-  //   };
-  //   connectWallet();
-  // }, [walletAddress]);
+  }, [walletAddress]);
 
   return (
     <AppContext.Provider
@@ -195,6 +188,8 @@ export const AppProvider = ({ children }: any) => {
         donate,
         coinToRaiseIn,
         setCoinToRaiseIn,
+        onToggle,
+        isOpen,
       }}
     >
       {children}

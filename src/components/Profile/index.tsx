@@ -29,17 +29,13 @@ import MobileNavBar from "../Navbar/MobileNavbar";
 import { getTokenConversion } from "../../utils/tokenPrice";
 // import { Transactions } from "../Campaign/Details";
 import SideNav from "../SideNav";
-import {
-  useGetACampaign,
-  useGetAllCampaigns,
-  useGetUserProfile,
-  useGetAllUsers,
-} from "../../hooks/index";
+
 import { useAccount } from "wagmi";
 import { useAppSelector } from "../../redux/hook";
 import { contractAddress } from "../../hooks";
 import { SidebarDemo } from "../Sidebar";
 import { DownloadIcon, CopyIcon } from "@chakra-ui/icons";
+import { useGetAllCampaigns } from "../functions";
 
 const AnimatedCopyIcon = motion(CopyIcon);
 
@@ -53,41 +49,47 @@ const bounce = keyframes`
 `;
 
 function Index() {
-  const { user } = React.useContext(AppContext);
   const location = useLocation();
-  const { data: dd } = useGetAllCampaigns();
-  const { address } = useAccount();
-  const data = useAppSelector((state) => state.campaign);
-
-  const donationLink = window.location.origin + "/details/" + data.id;
+  const { getAllCampaigns } = useGetAllCampaigns();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [converstion, setConverstion] = React.useState(0);
-  const { writeContractAsync } = useWriteContract();
-
+  const campaigns = useAppSelector((state) => state.campaign);
+  const address = useAppSelector((state) => state.tronData.walletAddress);
+  const data = campaigns?.filter((camp) => camp.address === address);
+  const donationLink = window.location.origin + "/details/" + data[0].id;
+  const [isLoading, setIsLoading] = useState(false);
   const { hasCopied, onCopy } = useClipboard(donationLink);
+  const { getSmartContract } = useContext(AppContext);
 
   const handleClaim = async () => {
-    // try {
-    //   const hash = await writeContractAsync({
-    //     abi: contractAbi.abi,
-    //     address: contractAddress,
-    //     functionName: "claim",
-    //     args: [data.id],
-    //   });
-    //   console.log(hash);
-    //   toast.success("claim Successful");
-    // } catch (err: any) {
-    //   toast.error(err.message);
-    //   console.log("[Error message from handleClaim -]", err.message);
-    //   return;
-    // }
+    try {
+      setIsLoading(true);
+      const contract = await getSmartContract();
+      const value = await contract
+        ?.finalizeCampaign(BigInt(data[0].id), "skjsjsj")
+        .send({
+          from: window.tronWeb.defaultAddress.base58,
+          shouldPollResponse: false,
+        });
+
+      if (value) {
+        toast.success("claim Successful");
+        setIsLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+      setIsLoading(false);
+      console.log("[Error message from handleClaim -]", err.message);
+      return;
+    }
   };
 
   React.useEffect(() => {
     const cc = async () => {
-      const val = await getTokenConversion(data.amountRequired);
+      const val = await getTokenConversion(data[0]?.amountRequired);
       setConverstion(val);
     };
     if (data) {
@@ -95,20 +97,13 @@ function Index() {
     }
   }, [data]);
 
-  const { getSmartContract } = useContext(AppContext);
-
   React.useEffect(() => {
-    const getCamp = async () => {
-      const smartContract = await getSmartContract();
-      const data_ = await smartContract.getAllCampaigns().call();
-      const data = await smartContract.campaigns(BigInt(1)).call();
-      console.log("campaigns", data_);
-      console.log("getallcamp", data);
+    const call = async () => {
+      await getAllCampaigns(getSmartContract);
     };
-
-    getCamp();
-    generateQR();
+    call();
   }, []);
+
   // With async/await
   const generateQR = async () => {
     try {
@@ -188,10 +183,12 @@ function Index() {
           cursor="pointer"
         >
           <Flex color="#5E5E5E" fontWeight={600} justify="space-between">
-            <Text>{data.description}</Text>
+            <Text>{data[0]?.description}</Text>
             <Text>
               {Math.floor(
-                (Number(data.amountDonated) / Number(data.amountRequired)) * 100
+                (Number(data[0]?.amountDonated) /
+                  Number(data[0]?.amountRequired)) *
+                  100
               )}
               %
             </Text>
@@ -201,13 +198,15 @@ function Index() {
           </Flex>
 
           <Flex color="#1935C4" fontWeight={600} mt={3} justify="space-between">
-            <Text>Z{Number(data.amountDonated)}</Text>
-            <Text>Z{Number(data.amountRequired)}</Text>
+            <Text>Z{Number(data[0]?.amountDonated)}</Text>
+            <Text>Z{Number(data[0]?.amountRequired)}</Text>
           </Flex>
           <Progress
             color="#1935C4"
             value={Math.floor(
-              (Number(data.amountDonated) / Number(data.amountRequired)) * 100
+              (Number(data[0]?.amountDonated) /
+                Number(data[0]?.amountRequired)) *
+                100
             )}
           />
           {/* Donation Link */}
@@ -286,7 +285,8 @@ function Index() {
         bgColor="purple"
         mx={8}
         px={8}
-        isDisabled={!data.donationComplete}
+        isDisabled={!data[0].donationComplete}
+        isLoading={isLoading}
       >
         Claim Donation
       </Button>

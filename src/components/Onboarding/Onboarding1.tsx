@@ -137,7 +137,7 @@ function Step1() {
       </Flex>
       {/* funding sector */}
       <Flex zIndex={1000000} pt={8} flexWrap="wrap" gap={6}>
-        {tags.map((tag: any) => (
+        {tags?.map((tag: any) => (
           <Tag
             zIndex={1000000}
             cursor="pointer"
@@ -156,7 +156,7 @@ function Step1() {
       </Flex>
       <Text>what's the funding for?</Text>
       <Flex pt={8} gap={6} flexWrap="wrap">
-        {tagVal.map((tag) => (
+        {tagVal?.map((tag) => (
           <Tag
             cursor="pointer"
             py={4}
