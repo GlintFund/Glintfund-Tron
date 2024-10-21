@@ -73,7 +73,7 @@ export const HoverEffect = ({
               borderRadius="md"
               value={(item.amountDonated / item.amountRequired) * 100}
             />
-            <p className="py-3">${item.amountDonated} raised</p>
+            <p className="py-3">${item.amountDonated.toLocaleString()} raised</p>
             <div className="flex flex-row justify-between gap-y-3">
               <div className=" flex-1 gap-y-3">
                 <p className="text-zinc-400 tracking-wide leading-relaxed text-sm">

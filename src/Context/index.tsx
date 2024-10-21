@@ -14,7 +14,9 @@ import { config } from "../utils/wagmi";
 import contractAbi from "../contract/CrowdFunding-abi.json";
 import { initContract } from "../utils/tronweb";
 import abi from "../contract/Tron_CrowdFunding-abi.json";
-export const contractAddress_ = "TWE5CpLwpiXpaERhJbKuzUPHZksfPEniVS";
+// export const contractAddress_ = "TWE5CpLwpiXpaERhJbKuzUPHZksfPEniVS";
+export const contractAddress_ = "TUZarbS8ZyB1uoyJ78YxzqBUJxDbedCxs5";
+
 // const contractAddress_ = "TX2bADS8Rca97UVpi9BnWvW3kECUhNEQKM";
 import { useGetMyCampaigns, useGetAllCampaigns } from "../components/functions";
 import { CampaignT } from "../redux/types";
@@ -117,9 +119,17 @@ export const AppProvider = ({ children }: any) => {
 
   const getUser = () => {};
 
+  React.useEffect(() => {
+    const exist = localStorage.getItem("walletAddress");
+    if (exist) {
+    window.tronLink.request({method: 'tron_requestAccounts'})
+    } 
+  },[])
+
   const getSmartContract = async () => {
     window.tronWeb.setFullNode(network);
     if (walletAddress) {
+      // window.tronLink.request({method: 'tron_requestAccounts'})
       if (window.tronWeb.ready) {
         return await window.tronWeb.contract(abi.entrys, contractAddress_);
       }
@@ -138,14 +148,17 @@ export const AppProvider = ({ children }: any) => {
     const call = async () => {
       if (walletAddress) {
         await getAllCampaigns(getSmartContract);
-
+        // const contract = await getSmartContract();
+        // const totalCamp = await contract?.campaignCounter().call();
+        // console.log("CAMPIGNS", totalCamp);
+          
         const userExist = campaigns?.some(
           (campaign: CampaignT) => campaign.address === walletAddress
         );
         if (userExist) {
           console.log("user exists");
-          // const previousPage = location.state?.from || "campaign";
-          // navigate(previousPage);
+          const previousPage = location.state?.from || "campaign";
+          navigate("PREVIOUS PAGE",previousPage);
           navigate("campaign");
           return;
         } else if (!userExist) {

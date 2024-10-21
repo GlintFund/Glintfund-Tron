@@ -67,7 +67,7 @@ function Details() {
           const val: CampaignT = {
             address: window.tronWeb.address.fromHex(data.admin),
             title: data.title,
-            amountDonated: data.amount_donated.toNumber(),
+            amountDonated: data.amount_donated.toNumber()/1000000,
             amountRequired: data.amount_required.toNumber(),
             description: data.description,
             donationComplete: data.donation_complete,
@@ -98,10 +98,10 @@ function Details() {
       const contract = await getSmartContract();
       var theId = +id;
       const donate = await contract
-        .donate(BigInt(theId), "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9")
+        .donate(BigInt(theId))
         .send({
           callValue: window?.tronWeb.toSun(value),
-          from: window.tronWeb.defaultAddress.base58,
+          from: window?.tronWeb.defaultAddress.base58,
           shouldPollResponse: false,
         });
       console.log(donate);
@@ -123,11 +123,11 @@ function Details() {
 
   if (loading) {
     return (
-      <SideNav>
+      <SidebarDemo>
         <Center>
           <Text>Loading...</Text>
         </Center>
-      </SideNav>
+        </SidebarDemo>
     );
   }
 
@@ -171,11 +171,11 @@ function Details() {
             ${dollarVal}
           </Flex>
           <Flex color="#1935C4" fontWeight={600} mt={3} justify="space-between">
-            <Text>T{details?.amountDonated}</Text>
-            <Text>T{details?.amountRequired}</Text>
+            <Text>T{details?.amountDonated.toLocaleString()}</Text>
+            <Text>T{details?.amountRequired.toLocaleString()}</Text>
           </Flex>
           <Progress
-            color="#1935C4"
+            // color="#1935C4"
             value={
               Math.floor(details?.amountDonated / details?.amountRequired) * 100
             }

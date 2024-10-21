@@ -37,6 +37,7 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "css-loader": "^7.1.2",
+    "dotenv": "^16.4.5",
     "file-loader": "^6.2.0",
     "framer-motion": "^11.3.30",
     "i18next": "^23.2.3",

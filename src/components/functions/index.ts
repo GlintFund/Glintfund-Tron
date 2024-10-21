@@ -20,7 +20,7 @@ export const useGetAllCampaigns = () => {
         const param = {
           address: window.tronWeb.address.fromHex(data.admin),
           title: data.title,
-          amountDonated: data.amount_donated.toNumber(),
+          amountDonated: data.amount_donated.toNumber()/ 100000,
           amountRequired: data.amount_required.toNumber(),
           description: data.description,
           donationComplete: data.donation_complete,

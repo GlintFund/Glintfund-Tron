@@ -195,8 +195,6 @@ const Campaign = () => {
   const getRandomImage = () => {
     return pics[Math.floor(Math.random() * pics.length)];
   };
-
-  console.log(campaigns);
   const filteredCampaign = campaigns
     ?.filter((camp) => {
       if (onFilterChange === "All") return true; // Don't filter if it's "All"
