@@ -56,6 +56,7 @@ function Details() {
     setDollarVal(val);
   };
 
+
   useEffect(() => {
     const callOnMount = async () => {
       try {
@@ -162,7 +163,7 @@ function Details() {
           <Flex color="#5E5E5E" fontWeight={600} justify="space-between">
             <Text>{details?.description}</Text>
             <Text>
-              {Math.floor(details?.amountDonated / details?.amountRequired) *
+              {(details?.amountDonated / details?.amountRequired) *
                 100}
               %
             </Text>
@@ -177,7 +178,7 @@ function Details() {
           <Progress
             // color="#1935C4"
             value={
-              Math.floor(details?.amountDonated / details?.amountRequired) * 100
+              (details?.amountDonated / details?.amountRequired) * 100
             }
           />
         </Box>
