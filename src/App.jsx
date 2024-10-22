@@ -13,8 +13,33 @@ import MessagePage from "./pages/Message";
 import ConnectWallet from "./components/LandingPage/ConnectWallet";
 import Loading from "./pages/Loading";
 import Exchange from "./pages/Lending";
+import { AppContext } from "./Context";
 
 const App = () => {
+  const {tronWebReady, setTronWebReady} = React.useContext(AppContext);
+
+  React.useEffect(() => {
+    window.tronLink.request({method: 'tron_requestAccounts'})
+
+    const checkTronLinkConnection = async () => {
+      window.tronLink.request({method: 'tron_requestAccounts'})
+      if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        // Ensure TronLink and the user's wallet are ready
+        setTronWebReady(true);
+      } else {
+        // Listen for TronLink injection
+        window.addEventListener('tronLink#initialized', async () => {
+          if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+            setTronWebReady(true);
+          }
+        });
+      }
+    };
+
+    checkTronLinkConnection();
+  }, []);
+
+
   useEffect(() => {
     Aos.init({
       duration: 2500,
@@ -24,9 +49,9 @@ const App = () => {
 
   return (
     <React.Fragment>
+        {tronWebReady ? 
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/loading" element={<Loading />} />
         <Route path="connect-wallet" element={<ConnectWallet />} />
         <Route path="onboarding" element={<Onboarding1 />} />
         <Route path="profile" element={<Profile />} />
@@ -34,7 +59,14 @@ const App = () => {
         <Route path="details/:id" element={<Details />} />
         <Route path="message" element={<MessagePage />} />
         <Route path="exchange" element={<Exchange />} />
-      </Routes>
+      </Routes> 
+      : (
+      <Routes>
+        <Route path="/loading" element={<Loading />} />
+        </Routes> 
+
+      )
+      }
     </React.Fragment>
   );
 };

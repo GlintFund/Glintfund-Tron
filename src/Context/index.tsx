@@ -48,6 +48,9 @@ export const AppContext = React.createContext<{
   setCoinToRaiseIn: any;
   onToggle: any;
   isOpen: boolean;
+  tronWebReady: boolean;
+  setTronWebReady:any
+
 }>({
   step: 1,
   setStep: undefined,
@@ -69,6 +72,8 @@ export const AppContext = React.createContext<{
   setCoinToRaiseIn: undefined,
   onToggle: undefined,
   isOpen: false,
+  tronWebReady: false,
+  setTronWebReady: undefined
 });
 
 // const network = "https://api.shasta.trongrid.io";
@@ -104,6 +109,7 @@ export const AppProvider = ({ children }: any) => {
     id: "TRX",
     name: "tron",
   });
+  const [tronWebReady, setTronWebReady] = React.useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,16 +125,11 @@ export const AppProvider = ({ children }: any) => {
 
   const getUser = () => {};
 
-  React.useEffect(() => {
-    const exist = localStorage.getItem("walletAddress");
-    if (exist) {
-    window.tronLink.request({method: 'tron_requestAccounts'})
-    } 
-  },[])
+
 
   const getSmartContract = async () => {
     window.tronWeb.setFullNode(network);
-    if (walletAddress) {
+    if (walletAddress && tronWebReady) {
       // window.tronLink.request({method: 'tron_requestAccounts'})
       if (window.tronWeb.ready) {
         return await window.tronWeb.contract(abi.entrys, contractAddress_);
@@ -146,31 +147,31 @@ export const AppProvider = ({ children }: any) => {
 
   React.useEffect(() => {
     const call = async () => {
-      if (walletAddress) {
+      if (walletAddress ) {
         await getAllCampaigns(getSmartContract);
-        // const contract = await getSmartContract();
-        // const totalCamp = await contract?.campaignCounter().call();
-        // console.log("CAMPIGNS", totalCamp);
           
-        const userExist = campaigns?.some(
-          (campaign: CampaignT) => campaign.address === walletAddress
-        );
-        if (userExist) {
-          console.log("user exists");
-          const previousPage = location.state?.from || "campaign";
-          navigate("PREVIOUS PAGE",previousPage);
-          navigate("campaign");
-          return;
-        } else if (!userExist) {
+        // const userExist = campaigns?.some(
+        //   (campaign: CampaignT) => campaign.address === walletAddress
+        // );
+        // if (userExist) {
+        //   console.log("user exists");
+        //   const previousPage = location.state?.from || "campaign";
+        //   navigate("PREVIOUS PAGE",previousPage);
+        //   navigate("campaign");
+        //   return;
+        // } else 
+        // if (!userExist) {
           if (location.pathname.includes("connect-wallet")) {
             onToggle();
             return;
-          } else {
-            // await getAllCampaigns(getSmartContract);
-            navigate("/campaign");
-            return;
           }
-        }
+          // } else {
+          // const previousPage = location.state?.from || "campaign";
+          // console.log(location.state?.from)
+          // navigate(previousPage);
+          //   return;
+          // }
+        
       } else if (!walletAddress && location.pathname.includes("details/")) {
         return;
       } else {
@@ -203,6 +204,8 @@ export const AppProvider = ({ children }: any) => {
         setCoinToRaiseIn,
         onToggle,
         isOpen,
+        tronWebReady,
+        setTronWebReady
       }}
     >
       {children}

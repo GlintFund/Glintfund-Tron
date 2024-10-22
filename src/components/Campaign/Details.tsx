@@ -32,6 +32,10 @@ import { SidebarDemo } from "../Sidebar";
 import { addCampaignInView } from "../../redux/slice/CampInViewSlice";
 import { AppContext, contractAddress_ } from "../../Context";
 import { useApproveSpending } from "../functions";
+import abi from "../../contract/Tron_CrowdFunding-abi.json"
+import WalletButton from "../WalletButton";
+
+
 
 function Details() {
   const { id } = useParams();
@@ -47,21 +51,25 @@ function Details() {
   const details: CampaignT = useAppSelector(
     (state) => state.CampaignInViewSlice
   );
-  const { getSmartContract } = useContext(AppContext);
+  const { getSmartContract, tronWebReady } = useContext(AppContext);
   const { approveSpending, loading: approveSpendLoading } =
     useApproveSpending();
+    const walletAddress = useAppSelector((state) => state.tronData.walletAddress)
 
   const convert = async () => {
     const val = await getTokenConversion(details?.amountRequired);
     setDollarVal(val);
   };
 
-
   useEffect(() => {
+    window.tronLink.request({method: 'tron_requestAccounts'})
     const callOnMount = async () => {
+      if(tronWebReady) {
+
+      
       try {
         setLoading(true);
-        const contract = await getSmartContract();
+        const contract = await window.tronWeb.contract(abi.entrys, contractAddress_);
         const data = await contract?.campaigns(BigInt(id)).call();
         console.log(data);
         if (data) {
@@ -77,6 +85,7 @@ function Details() {
             donationType: data.donationType,
           };
           dispatch(addCampaignInView(val));
+          console.log("DETAILS OOOOOO",details)
           setLoading(false);
           convert();
         }
@@ -84,9 +93,10 @@ function Details() {
         setLoading(false);
         toast.error("Connect your wallet to donate");
       }
+    }
     };
     callOnMount();
-  }, []);
+  }, [tronWebReady]);
 
   const handleDonate = async () => {
     try {
@@ -191,6 +201,7 @@ function Details() {
           >
             <NumberInputField my={3} placeholder="how much in tron?" />
           </NumberInput>
+          {walletAddress ?  
           <Button
             onClick={handleDonate}
             w={"full"}
@@ -200,7 +211,10 @@ function Details() {
             isLoading={donateLoading}
           >
             Send
-          </Button>
+          </Button>  : (
+            <WalletButton/>
+          )}
+  
         </Box>
       </div>
     </SidebarDemo>

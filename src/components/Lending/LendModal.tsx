@@ -29,7 +29,7 @@ function LendModal({ onToggle, isOpen }) {
       const contract = await getSmartContract();
       var theId = 2;
       const donate = await contract
-        .donate(BigInt(theId), "TFUD8x3iAZ9dF7NDCGBtSjznemEomE5rP9")
+        .donate(BigInt(theId))
         .send({
           callValue: window?.tronWeb.toSun(50),
           from: window.tronWeb.defaultAddress.base58,
