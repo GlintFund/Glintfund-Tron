@@ -50,7 +50,6 @@ const bounce = keyframes`
 function Index() {
   const location = useLocation()
   const { getAllCampaigns } = useGetAllCampaigns()
-  const [qrCodeUrl, setQrCodeUrl] = useState('')
   const [isHovered, setIsHovered] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
   const [converstion, setConverstion] = React.useState(0)
@@ -60,6 +59,7 @@ function Index() {
   const donationLink = window.location.origin + '/details/' + data[0]?.id
   const [isLoading, setIsLoading] = useState(false)
   const { hasCopied, onCopy } = useClipboard(donationLink)
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
   const { getSmartContract } = useContext(AppContext)
 
   const navigate = useNavigate()
@@ -96,6 +96,7 @@ function Index() {
     if (data) {
       cc()
     }
+    generateQRCode()
   }, [data])
 
   React.useEffect(() => {
@@ -104,17 +105,14 @@ function Index() {
     }
     call()
   }, [])
-
-  // With async/await
-  // const generateQR = async () => {
-  //   try {
-  //     const url = await QRCode.toDataURL(donationLink);
-  //     setQrCodeUrl(url);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
+  const generateQRCode = async () => {
+    try {
+      const url = await QRCode.toDataURL(donationLink)
+      setQrCodeUrl(url)
+    } catch (err) {
+      console.error(err)
+    }
+  }
   const handleDownloadQR = () => {
     const link = document.createElement('a')
     link.href = qrCodeUrl

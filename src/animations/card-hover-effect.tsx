@@ -64,7 +64,9 @@ export const HoverEffect = ({
           </AnimatePresence>
           <Card>
             <CardTitle>{item.title}</CardTitle>
-            <CardDescription>{item.description}</CardDescription>
+            <CardDescription>
+              {item.description.slice(0, 100)}...
+            </CardDescription>
             <CardContainer className="inter-var">
               <ImageSection src={`/dummyPic/${item?.image}`} />
             </CardContainer>
