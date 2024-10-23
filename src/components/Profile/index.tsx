@@ -13,9 +13,10 @@ import {
   Heading,
   Show,
   Hide,
+  Center,
 } from '@chakra-ui/react'
 import { AppContext } from '../../Context'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../Navbar'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { motion } from 'framer-motion'
@@ -56,10 +57,12 @@ function Index() {
   const campaigns = useAppSelector((state) => state.campaign)
   const address = useAppSelector((state) => state.tronData.walletAddress)
   const data = campaigns?.filter((camp) => camp.address === address)
-  const donationLink = window.location.origin + '/details/' + data[0].id
+  const donationLink = window.location.origin + '/details/' + data[0]?.id
   const [isLoading, setIsLoading] = useState(false)
   const { hasCopied, onCopy } = useClipboard(donationLink)
   const { getSmartContract } = useContext(AppContext)
+
+  const navigate = useNavigate()
 
   const handleClaim = async () => {
     try {
@@ -164,7 +167,7 @@ function Index() {
       <Text my={4} mx={3} fontWeight={600}>
         Active funds
       </Text>
-      {data && (
+      {data.length > 0 ? (
         <Box
           color="white"
           py={3}
@@ -191,11 +194,11 @@ function Index() {
               %
             </Text>
           </Flex>
-          <Flex color="#353535" mt={1}>
+          <Flex color="white" mt={1}>
             ${converstion}
           </Flex>
 
-          <Flex color="#1935C4" fontWeight={600} mt={3} justify="space-between">
+          <Flex color="white" fontWeight={600} mt={3} justify="space-between">
             <Text>T{Number(data[0]?.amountDonated.toLocaleString())}</Text>
             <Text>T{Number(data[0]?.amountRequired.toLocaleString())}</Text>
           </Flex>
@@ -275,6 +278,12 @@ function Index() {
             </Flex>
           </Box>
         </Box>
+      ) : (
+        <Center>
+          <Button onClick={() => navigate('/onboarding')}>
+            Create a Campaign
+          </Button>
+        </Center>
       )}
       <Button
         onClick={handleClaim}
@@ -283,7 +292,7 @@ function Index() {
         bgColor="purple"
         mx={8}
         px={8}
-        isDisabled={!data[0].donationComplete}
+        isDisabled={!data[0]?.donationComplete}
         isLoading={isLoading}
       >
         Claim Donation
