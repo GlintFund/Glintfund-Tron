@@ -1,93 +1,96 @@
-import React, { useState, useEffect } from "react";
-import toast from "react-hot-toast";
-import { useAppSelector, useAppDispatch } from "../../redux/hook";
-import { addData } from "../../redux/slice/TronDataSlice";
-import { clearCampaign } from "../../redux/slice/CampaignSlice";
-import { clearMyCampaigns } from "../../redux/slice/MyCampaignSlice";
+import React, { useState, useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { useAppSelector, useAppDispatch } from '../../redux/hook'
+import { addData } from '../../redux/slice/TronDataSlice'
+import { clearCampaign } from '../../redux/slice/CampaignSlice'
+import { clearMyCampaigns } from '../../redux/slice/MyCampaignSlice'
+import { AppContext } from '../../Context'
 // const network = "https://api.shasta.trongrid.io";
-const network = "https://api.nileex.io";
+const network = 'https://api.nileex.io'
 
 const WalletButton = () => {
-  const [isWrongNetwork, setIsWrongNetwork] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const wallet = useAppSelector((state) => state.tronData);
-  const dispatch = useAppDispatch();
-
+  const [isWrongNetwork, setIsWrongNetwork] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
+  const wallet = useAppSelector((state) => state.tronData)
+  const dispatch = useAppDispatch()
+  const { onToggle } = React.useContext(AppContext)
   // Check for existing wallet connection on load
   useEffect(() => {
-    const savedWalletAddress = localStorage.getItem("walletAddress");
+    const savedWalletAddress = localStorage.getItem('walletAddress')
     if (savedWalletAddress) {
-      dispatch(addData({ walletAddress: savedWalletAddress }));
-      checkNetwork();
+      dispatch(addData({ walletAddress: savedWalletAddress }))
+      checkNetwork()
     }
-  }, [dispatch]);
+  }, [dispatch])
 
-  window.addEventListener("message", (event) => {
+  window.addEventListener('message', (event) => {
     if (
       event.data &&
       event.data.message &&
-      event.data.message.action === "setNode"
+      event.data.message.action === 'setNode'
     ) {
-      const newNetwork = event.data.message.data.node;
+      const newNetwork = event.data.message.data.node
       if (newNetwork.fullNode.host === network) {
-        setIsWrongNetwork(false);
+        setIsWrongNetwork(false)
       } else {
-        setIsWrongNetwork(true);
-        toast.error("Please switch to Nile Testnet in TronLink.");
+        setIsWrongNetwork(true)
+        toast.error('Please switch to Nile Testnet in TronLink.')
       }
     }
-  });
+  })
 
   const connectWallet = async () => {
     try {
-      if (typeof window.tronWeb !== "undefined") {
+      if (typeof window.tronWeb !== 'undefined') {
         if (window.tronWeb.ready) {
-          const address = window.tronWeb.defaultAddress.base58;
-          localStorage.setItem("walletAddress", address); // Save to localStorage
-          checkNetwork();
-          dispatch(addData({ walletAddress: address }));
+          const address = window.tronWeb.defaultAddress.base58
+          localStorage.setItem('walletAddress', address) // Save to localStorage
+          checkNetwork()
+          dispatch(addData({ walletAddress: address }))
+          onToggle()
         } else {
-          await window.tronLink.request({ method: "tron_requestAccounts" });
-          const address = window.tronWeb.defaultAddress.base58;
-          localStorage.setItem("walletAddress", address); // Save to localStorage
-          checkNetwork();
-          dispatch(addData({ walletAddress: address }));
+          await window.tronLink.request({ method: 'tron_requestAccounts' })
+          const address = window.tronWeb.defaultAddress.base58
+          localStorage.setItem('walletAddress', address) // Save to localStorage
+          checkNetwork()
+          dispatch(addData({ walletAddress: address }))
+          onToggle()
         }
       }
     } catch (error) {
-      console.error("Error connecting wallet:", error);
-      toast.error("Please install TronLink to interact with this dApp.");
+      console.error('Error connecting wallet:', error)
+      toast.error('Please install TronLink to interact with this dApp.')
     }
-  };
+  }
 
   const checkNetwork = () => {
-    console.log(window.tronWeb.fullNode.host);
+    console.log(window.tronWeb.fullNode.host)
     if (window.tronWeb.fullNode.host === network) {
-      setIsWrongNetwork(false);
+      setIsWrongNetwork(false)
     } else {
-      toast.error("Please switch to the Nile Testnet in TronLink.");
-      setIsWrongNetwork(true);
+      toast.error('Please switch to the Nile Testnet in TronLink.')
+      setIsWrongNetwork(true)
     }
-  };
+  }
 
   const disconnectWallet = () => {
-    dispatch(addData({ walletAddress: null }));
-    localStorage.removeItem("walletAddress"); // Remove from localStorage
-    setIsWrongNetwork(false);
-    dispatch(clearCampaign());
-    dispatch(clearMyCampaigns());
-  };
+    dispatch(addData({ walletAddress: null }))
+    localStorage.removeItem('walletAddress') // Remove from localStorage
+    setIsWrongNetwork(false)
+    dispatch(clearCampaign())
+    dispatch(clearMyCampaigns())
+  }
 
   const copyAddress = () => {
     if (wallet.walletAddress) {
-      navigator.clipboard.writeText(wallet.walletAddress);
-      toast.success("Wallet address copied!");
+      navigator.clipboard.writeText(wallet.walletAddress)
+      toast.success('Wallet address copied!')
     }
-  };
+  }
 
   const togglePopup = () => {
-    setShowPopup(!showPopup);
-  };
+    setShowPopup(!showPopup)
+  }
 
   return (
     <div className="relative">
@@ -103,14 +106,14 @@ const WalletButton = () => {
         // If connected and wrong network
         <button
           className={`${
-            isWrongNetwork ? "bg-red-500" : "bg-green-500"
+            isWrongNetwork ? 'bg-red-500' : 'bg-green-500'
           } text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors`}
           onClick={togglePopup}
         >
           {isWrongNetwork
-            ? "Wrong Network"
+            ? 'Wrong Network'
             : wallet.walletAddress.slice(0, 6) +
-              "..." +
+              '...' +
               wallet.walletAddress.slice(-4)}
         </button>
       )}
@@ -133,7 +136,7 @@ const WalletButton = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default WalletButton;
+export default WalletButton

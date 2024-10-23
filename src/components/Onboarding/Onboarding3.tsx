@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Text,
@@ -10,30 +10,34 @@ import {
   Checkbox,
   FormControl,
   FormLabel,
-} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../Context";
-import toast from "react-hot-toast";
+} from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../../Context'
+import toast from 'react-hot-toast'
+import { useAppDispatch, useAppSelector } from '../../redux/hook'
+import { addCampaign } from '../../redux/slice/CampaignSlice'
 
 function Onboarding3() {
   const { bio, tags, amount, setBio, getSmartContract } =
-    React.useContext(AppContext);
-  const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(false);
-  const [endTime, setEndTime] = useState("");
-  const [isRefundable, setIsRefundable] = useState(false);
-  const [donationType, setDonationType] = useState("");
+    React.useContext(AppContext)
+  const navigate = useNavigate()
+  const [loading, setLoading] = React.useState(false)
+  const [endTime, setEndTime] = useState('')
+  const [isRefundable, setIsRefundable] = useState(false)
+  const [donationType, setDonationType] = useState('')
+  const dispatch = useAppDispatch()
+  const campaigns = useAppSelector((state) => state.campaign)
 
   const handleCreateUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    const smartContract = await getSmartContract();
+    const smartContract = await getSmartContract()
     // console.log(bio, tags, amount, isRefundable, donationType, endTime);
 
     const endTimeBigInt = endTime
       ? BigInt(new Date(endTime).getTime() / 1000)
-      : null;
+      : null
 
     // Handle form submission logic here
     // console.log("End Time (BigInt):", endTimeBigInt);
@@ -43,7 +47,7 @@ function Onboarding3() {
         .create(
           bio.name,
           bio.description,
-          BigInt(amount),
+          BigInt(amount * 1000000),
           tags,
           endTimeBigInt,
           isRefundable,
@@ -52,18 +56,30 @@ function Onboarding3() {
         .send({
           from: window.tronWeb.defaultAddress.base58, // Sender's address
           shouldPollResponse: false, // Optional: wait for confirmation
-        });
+        })
 
-      console.log(result);
-      toast("Account Created Successfully");
-      navigate("/profile");
-      setLoading(false);
+      console.log(result)
+      toast('Account Created Successfully')
+      const dispatchData = {
+        address: window.tronWeb.defaultAddress.base58,
+        title: bio.name,
+        amountDonated: 0,
+        amountRequired: amount,
+        description: bio.description,
+        donationComplete: false,
+        id: campaigns.length + 1,
+        endTime: Number(endTimeBigInt),
+        donationType: donationType,
+      }
+      dispatch(addCampaign(dispatchData))
+      navigate('/profile')
+      setLoading(false)
     } catch (err) {
-      console.log(err.message);
-      toast(err);
-      setLoading(false);
+      console.log(err.message)
+      toast(err)
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <Box>
@@ -77,7 +93,7 @@ function Onboarding3() {
         </Text>
       </Box>
       {/* put your details */}
-      <Flex flexDirection="column" gap={3} pt={4} w={"100%"}>
+      <Flex flexDirection="column" gap={3} pt={4} w={'100%'}>
         <Text my={3}>Title</Text>
         <Input
           value={bio.name}
@@ -150,7 +166,7 @@ function Onboarding3() {
         </Button>
       </Flex>
     </Box>
-  );
+  )
 }
 
-export default Onboarding3;
+export default Onboarding3

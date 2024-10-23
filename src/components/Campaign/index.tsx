@@ -206,9 +206,9 @@ const Campaign = () => {
     }));
 
   React.useEffect(() => {
-    if (campaigns.length < 1) {
-      getAllCampaigns(getSmartContract);
-    }
+    // if (campaigns.length < 1) {
+    //   getAllCampaigns(getSmartContract);
+    // }
   }, []);
 
   return (

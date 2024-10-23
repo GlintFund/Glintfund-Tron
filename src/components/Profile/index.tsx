@@ -1,43 +1,41 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext } from 'react'
 import {
   Box,
   Text,
   Flex,
-  Link,
   Input,
   Button,
   Image,
   VStack,
-  HStack,
   Progress,
   keyframes,
   useClipboard,
   Heading,
   Show,
   Hide,
-} from "@chakra-ui/react";
-import { AppContext } from "../../Context";
-import { useLocation } from "react-router-dom";
-import Navbar from "../Navbar";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { motion } from "framer-motion";
-import { useWriteContract } from "wagmi";
-import QRCode from "qrcode";
-import contractAbi from "../../contract/CrowdFunding-abi.json";
-import toast from "react-hot-toast";
-import MobileNavBar from "../Navbar/MobileNavbar";
-import { getTokenConversion } from "../../utils/tokenPrice";
+} from '@chakra-ui/react'
+import { AppContext } from '../../Context'
+import { useLocation } from 'react-router-dom'
+import Navbar from '../Navbar'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { motion } from 'framer-motion'
+import { useWriteContract } from 'wagmi'
+import QRCode from 'qrcode'
+import contractAbi from '../../contract/CrowdFunding-abi.json'
+import toast from 'react-hot-toast'
+import MobileNavBar from '../Navbar/MobileNavbar'
+import { getTokenConversion } from '../../utils/tokenPrice'
 // import { Transactions } from "../Campaign/Details";
-import SideNav from "../SideNav";
+import SideNav from '../SideNav'
 
-import { useAccount } from "wagmi";
-import { useAppSelector } from "../../redux/hook";
-import { contractAddress } from "../../hooks";
-import { SidebarDemo } from "../Sidebar";
-import { DownloadIcon, CopyIcon } from "@chakra-ui/icons";
-import { useGetAllCampaigns } from "../functions";
+import { useAccount } from 'wagmi'
+import { useAppSelector } from '../../redux/hook'
+import { contractAddress } from '../../hooks'
+import { SidebarDemo } from '../Sidebar'
+import { DownloadIcon, CopyIcon } from '@chakra-ui/icons'
+import { useGetAllCampaigns } from '../functions'
 
-const AnimatedCopyIcon = motion(CopyIcon);
+const AnimatedCopyIcon = motion(CopyIcon)
 
 const bounce = keyframes`
   0%, 50% {
@@ -46,82 +44,82 @@ const bounce = keyframes`
   50% {
     transform: translateY(-20px);
   }
-`;
+`
 
 function Index() {
-  const location = useLocation();
-  const { getAllCampaigns } = useGetAllCampaigns();
-  const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
-  const [converstion, setConverstion] = React.useState(0);
-  const campaigns = useAppSelector((state) => state.campaign);
-  const address = useAppSelector((state) => state.tronData.walletAddress);
-  const data = campaigns?.filter((camp) => camp.address === address);
-  const donationLink = window.location.origin + "/details/" + data[0].id;
-  const [isLoading, setIsLoading] = useState(false);
-  const { hasCopied, onCopy } = useClipboard(donationLink);
-  const { getSmartContract } = useContext(AppContext);
+  const location = useLocation()
+  const { getAllCampaigns } = useGetAllCampaigns()
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
+  const [isHovered, setIsHovered] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
+  const [converstion, setConverstion] = React.useState(0)
+  const campaigns = useAppSelector((state) => state.campaign)
+  const address = useAppSelector((state) => state.tronData.walletAddress)
+  const data = campaigns?.filter((camp) => camp.address === address)
+  const donationLink = window.location.origin + '/details/' + data[0].id
+  const [isLoading, setIsLoading] = useState(false)
+  const { hasCopied, onCopy } = useClipboard(donationLink)
+  const { getSmartContract } = useContext(AppContext)
 
   const handleClaim = async () => {
     try {
-      setIsLoading(true);
-      const contract = await getSmartContract();
+      setIsLoading(true)
+      const contract = await getSmartContract()
       const value = await contract
-        ?.finalizeCampaign(BigInt(data[0].id), "skjsjsj")
+        ?.finalizeCampaign(BigInt(data[0].id), 'skjsjsj')
         .send({
           from: window.tronWeb.defaultAddress.base58,
           shouldPollResponse: false,
-        });
+        })
 
       if (value) {
-        toast.success("claim Successful");
-        setIsLoading(false);
-        return;
+        toast.success('claim Successful')
+        setIsLoading(false)
+        return
       }
     } catch (err: any) {
-      toast.error(err.message);
-      setIsLoading(false);
-      console.log("[Error message from handleClaim -]", err.message);
-      return;
+      toast.error(err.message)
+      setIsLoading(false)
+      console.log('[Error message from handleClaim -]', err.message)
+      return
     }
-  };
+  }
 
   React.useEffect(() => {
     const cc = async () => {
-      const val = await getTokenConversion(data[0]?.amountRequired);
-      setConverstion(val);
-    };
-    if (data) {
-      cc();
+      const val = await getTokenConversion(data[0]?.amountRequired)
+      setConverstion(val)
     }
-  }, [data]);
+    if (data) {
+      cc()
+    }
+  }, [data])
 
   React.useEffect(() => {
     const call = async () => {
-      await getAllCampaigns(getSmartContract);
-    };
-    call();
-  }, []);
+      await getAllCampaigns(getSmartContract)
+    }
+    call()
+  }, [])
 
   // With async/await
-  const generateQR = async () => {
-    try {
-      const url = await QRCode.toDataURL(donationLink);
-      setQrCodeUrl(url);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const generateQR = async () => {
+  //   try {
+  //     const url = await QRCode.toDataURL(donationLink);
+  //     setQrCodeUrl(url);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const handleDownloadQR = () => {
-    const link = document.createElement("a");
-    link.href = qrCodeUrl;
-    link.setAttribute("download", "Qr Code"); // Set the download attribute with the desired file name
-    document.body.appendChild(link);
-    link.click();
-    link.remove(); // Clean up after the download is triggered
-  };
+    const link = document.createElement('a')
+    link.href = qrCodeUrl
+    link.setAttribute('download', 'Qr Code') // Set the download attribute with the desired file name
+    document.body.appendChild(link)
+    link.click()
+    link.remove() // Clean up after the download is triggered
+  }
 
   return (
     <SidebarDemo>
@@ -129,34 +127,34 @@ function Index() {
       <Flex
         mt={8}
         gap={8}
-        overflowX={"scroll"}
-        justify={"center"}
+        overflowX={'scroll'}
+        justify={'center'}
         css={{
-          "&::-webkit-scrollbar": {
-            display: "none", // Hide scrollbar for Chrome, Safari, and Opera
+          '&::-webkit-scrollbar': {
+            display: 'none', // Hide scrollbar for Chrome, Safari, and Opera
           },
-          scrollbarWidth: "none", // Hide scrollbar for Firefox
-          msOverflowStyle: "none", // Hide scrollbar for Internet Explorer and Edge
+          scrollbarWidth: 'none', // Hide scrollbar for Firefox
+          msOverflowStyle: 'none', // Hide scrollbar for Internet Explorer and Edge
         }}
       >
         <Hide below="md">
           <OptionCard
-            title={"Lending"}
+            title={'Lending'}
             description="This feature is coming soon"
           />
           <OptionCard
-            title={"Crowdfunding"}
+            title={'Crowdfunding'}
             description="easily raise funds under 10 seconds"
           />
           <OptionCard
-            title={"Borrowing"}
+            title={'Borrowing'}
             description="This feature is coming soon"
           />
         </Hide>
         <Show below="md">
           <Flex justify="center" mx="auto">
             <OptionCard_
-              title={"Crowdfunding"}
+              title={'Crowdfunding'}
               description="easily raise funds under 10 seconds"
             />
           </Flex>
@@ -172,13 +170,13 @@ function Index() {
           py={3}
           mx={8}
           px={8}
-          borderRadius={"15px"}
+          borderRadius={'15px'}
           bgColor="transparent"
           gap={6}
           transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
           _hover={{
-            transform: "scale(1.05)",
-            boxShadow: "xl",
+            transform: 'scale(1.05)',
+            boxShadow: 'xl',
           }}
           cursor="pointer"
         >
@@ -198,8 +196,8 @@ function Index() {
           </Flex>
 
           <Flex color="#1935C4" fontWeight={600} mt={3} justify="space-between">
-            <Text>Z{Number(data[0]?.amountDonated)}</Text>
-            <Text>Z{Number(data[0]?.amountRequired)}</Text>
+            <Text>T{Number(data[0]?.amountDonated.toLocaleString())}</Text>
+            <Text>T{Number(data[0]?.amountRequired.toLocaleString())}</Text>
           </Flex>
           <Progress
             color="#1935C4"
@@ -227,7 +225,7 @@ function Index() {
               below.
             </Text>
 
-            <Flex flexDirection={{ base: "column", md: "row" }} gap={8} mb={8}>
+            <Flex flexDirection={{ base: 'column', md: 'row' }} gap={8} mb={8}>
               {/* QR Code Section */}
               <Box>
                 <Image
@@ -271,7 +269,7 @@ function Index() {
                   colorScheme="purple"
                   leftIcon={<CopyIcon />}
                 >
-                  {hasCopied ? "Copied" : "Copy Link"}
+                  {hasCopied ? 'Copied' : 'Copy Link'}
                 </Button>
               </Flex>
             </Flex>
@@ -291,35 +289,35 @@ function Index() {
         Claim Donation
       </Button>
     </SidebarDemo>
-  );
+  )
 }
 
-export default Index;
+export default Index
 
 interface OptionType {
-  title: string;
-  description: string;
+  title: string
+  description: string
 }
 
 const OptionCard: React.FC<OptionType> = ({ title, description }) => {
   return (
     <Box
-      maxW={"346px"}
-      maxH={"208px"}
-      borderRadius={"15px"}
+      maxW={'346px'}
+      maxH={'208px'}
+      borderRadius={'15px'}
       overflow="hidden"
       transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
       _hover={{
-        transform: "scale(1.05)",
-        boxShadow: "xl",
+        transform: 'scale(1.05)',
+        boxShadow: 'xl',
       }}
-      position={"relative"}
+      position={'relative'}
     >
       <Image
         src="crowd-funding.png"
         alt="Placeholder Image"
-        w={"346px"}
-        h={"208px"}
+        w={'346px'}
+        h={'208px'}
       />
       {/* <Text mt="2" color="white" position="absolute">
         crowdfunding
@@ -341,7 +339,7 @@ const OptionCard: React.FC<OptionType> = ({ title, description }) => {
         justifyContent="center"
         textAlign="center"
         px="4"
-        cursor={"pointer"}
+        cursor={'pointer'}
       >
         <VStack>
           <Text fontWeight="bold" fontSize="xl" opacity={1}>
@@ -352,27 +350,27 @@ const OptionCard: React.FC<OptionType> = ({ title, description }) => {
       </Box>
     </Box>
     // </Box>
-  );
-};
+  )
+}
 const OptionCard_: React.FC<OptionType> = ({ title, description }) => {
   return (
     <Box
-      maxW={"346px"}
-      maxH={"155px"}
-      borderRadius={"15px"}
+      maxW={'346px'}
+      maxH={'155px'}
+      borderRadius={'15px'}
       overflow="hidden"
       transition="transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
       _hover={{
-        transform: "scale(1.05)",
-        boxShadow: "xl",
+        transform: 'scale(1.05)',
+        boxShadow: 'xl',
       }}
-      position={"relative"}
+      position={'relative'}
     >
       <Image
         src="crowd-funding.png"
         alt="Placeholder Image"
-        w={"346px"}
-        h={"208px"}
+        w={'346px'}
+        h={'208px'}
       />
       {/* <Text mt="2" color="white" position="absolute">
         crowdfunding
@@ -394,7 +392,7 @@ const OptionCard_: React.FC<OptionType> = ({ title, description }) => {
         justifyContent="center"
         textAlign="center"
         px="4"
-        cursor={"pointer"}
+        cursor={'pointer'}
       >
         <VStack>
           <Text fontWeight="bold" fontSize="xl" opacity={1}>
@@ -405,5 +403,5 @@ const OptionCard_: React.FC<OptionType> = ({ title, description }) => {
       </Box>
     </Box>
     // </Box>
-  );
-};
+  )
+}
